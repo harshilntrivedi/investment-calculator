@@ -3,20 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment Calculator — Trivedi Harshil Nileshbhai</title>
+<title>Investment Calculator</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGMPT3FRW"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-QKGMPT3FRW');
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{--ink:#111;--ink2:#333;--muted:#888;--border:#e8e8e8;--bg:#f7f5f2;--white:#fff;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;font-weight:400;min-height:100vh;}
 .page{max-width:1040px;margin:0 auto;padding:48px 24px 100px;}
-
 .header{margin-bottom:44px;}
 .header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,72px);font-weight:600;line-height:1;letter-spacing:-1px;}
 .header-title em{font-style:italic;color:var(--muted);}
 .header-sub{margin-top:10px;font-size:14px;color:var(--muted);font-weight:300;}
-
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px;}
 .tab{padding:9px 18px;border-radius:40px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
 .tab:hover{border-color:var(--ink2);color:var(--ink);}
@@ -25,45 +31,36 @@ body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;font-
 .t-swp{background:#7B3F00;border-color:#7B3F00;color:#fff;}
 .t-idcw{background:#6B21A8;border-color:#6B21A8;color:#fff;}
 .t-ncd{background:#0F4C75;border-color:#0F4C75;color:#fff;}
-
 .panel{display:none;}
 .panel.active{display:block;animation:fadeUp 0.4s ease both;}
-
 .desc-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;}
 .desc-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
 .desc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
 .desc-text{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300;}
 .desc-text strong{color:var(--ink2);font-weight:500;}
-
 .form-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:32px;}
 .form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:28px;}
 @media(max-width:640px){.form-grid{grid-template-columns:1fr;gap:18px;}}
-
 .field label{display:block;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
 .input-wrap{position:relative;margin-bottom:9px;}
 .pfx,.sfx{position:absolute;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;}
 .pfx{left:13px;}.sfx{right:13px;}
-
 input[type=number]{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px 42px 11px 30px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;color:var(--ink);outline:none;transition:border-color 0.2s;-moz-appearance:textfield;}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 input[type=number]:focus{border-color:var(--ink2);background:#fff;}
 input[type=range]{width:100%;-webkit-appearance:none;height:3px;border-radius:3px;background:var(--border);outline:none;cursor:pointer;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--ink);cursor:pointer;transition:transform 0.15s;}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
-
 .btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.2s,transform 0.15s;}
 .btn:hover{opacity:0.82;transform:translateY(-1px);}
 .btn:active{transform:translateY(0);}
-
 .result-section{display:none;margin-top:20px;}
 .result-section.show{display:block;animation:fadeUp 0.4s ease both;}
 .sep{height:1px;background:var(--border);margin:24px 0 18px;}
-
 .summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
 .summary-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
 @media(max-width:640px){.summary-row,.summary-row-4{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:400px){.summary-row,.summary-row-4{grid-template-columns:1fr;}}
-
 .sum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 16px;}
 .sum-card.featured{background:var(--ink);border-color:var(--ink);}
 .sum-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
@@ -72,7 +69,6 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
 .sum-card.featured .sum-val{color:#fff;}
 .sum-sub{font-size:12px;color:var(--muted);margin-top:5px;font-weight:300;}
 .sum-card.featured .sum-sub{color:rgba(255,255,255,0.4);}
-
 .chart-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:24px 24px 20px;}
 .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
 .chart-title{font-size:13px;font-weight:600;}
@@ -80,51 +76,44 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
 .legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
 .legend-dot{width:10px;height:10px;border-radius:3px;}
 .chart-wrap{position:relative;height:260px;}
-
 .ctt{position:absolute;background:var(--ink);color:#fff;border-radius:10px;padding:10px 14px;font-size:12px;pointer-events:none;display:none;z-index:10;white-space:nowrap;transform:translate(-50%,-115%);box-shadow:0 8px 24px rgba(0,0,0,0.18);}
 .ctt-yr{font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:6px;}
 .ctt-row{display:flex;justify-content:space-between;gap:20px;margin-bottom:3px;align-items:center;}
 .ctt-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
-
 .toggle-group{display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;}
 .toggle-btn{flex:1;padding:9px 12px;border:none;border-radius:7px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
 .toggle-btn.active{background:var(--ink);color:#fff;}
-
 .info-strip{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#1e40af;line-height:1.7;}
-
 .footer{margin-top:48px;border-top:1px solid var(--border);padding-top:28px;text-align:center;}
 .footer-name{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px;}
 .footer-details{font-size:11px;color:var(--muted);font-weight:300;line-height:2;}
-.footer-datetime{font-size:11px;color:var(--muted);margin-top:6px;font-weight:300;}
-
+.footer-clock{font-size:11px;color:var(--muted);margin-top:6px;font-weight:300;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <!-- HEADER -->
   <div class="header">
     <div class="header-title">Investment<br><em>Calculator</em></div>
     <div class="header-sub">SIP &middot; Lumpsum &middot; SWP &middot; IDCW &middot; NCD+SIP &mdash; plan your financial future</div>
   </div>
 
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab t-sip" onclick="switchTab('sip',this,'t-sip')">&#128200; SIP</button>
-    <button class="tab"       onclick="switchTab('ls',this,'t-ls')">&#128176; Lumpsum</button>
-    <button class="tab"       onclick="switchTab('swp',this,'t-swp')">&#128260; SWP</button>
-    <button class="tab"       onclick="switchTab('idcw',this,'t-idcw')">&#128184; IDCW</button>
-    <button class="tab"       onclick="switchTab('ncd',this,'t-ncd')">&#127974; NCD + SIP</button>
+    <button class="tab" onclick="switchTab('ls',this,'t-ls')">&#128176; Lumpsum</button>
+    <button class="tab" onclick="switchTab('swp',this,'t-swp')">&#128260; SWP</button>
+    <button class="tab" onclick="switchTab('idcw',this,'t-idcw')">&#128184; IDCW</button>
+    <button class="tab" onclick="switchTab('ncd',this,'t-ncd')">&#127974; NCD + SIP</button>
   </div>
 
-  <!-- SIP PANEL -->
+  <!-- SIP -->
   <div id="sip" class="panel active">
     <div class="desc-box">
       <div class="desc-icon">&#128200;</div>
       <div>
         <div class="desc-title">Systematic Investment Plan (SIP)</div>
-        <div class="desc-text">Invest a <strong>fixed amount every month</strong> into a mutual fund. Your money grows through <strong>rupee cost averaging</strong> — you buy more units when prices are low and fewer when high. Ideal for salaried individuals building long-term wealth with consistent monthly discipline, no matter the market condition.</div>
+        <div class="desc-text">Invest a <strong>fixed amount every month</strong> into a mutual fund. Your money grows through <strong>rupee cost averaging</strong> — you buy more units when prices are low and fewer when high. Ideal for salaried individuals building long-term wealth with consistent monthly discipline.</div>
       </div>
     </div>
     <div class="form-card">
@@ -167,7 +156,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
     </div>
   </div>
 
-  <!-- LUMPSUM PANEL -->
+  <!-- LUMPSUM -->
   <div id="ls" class="panel">
     <div class="desc-box">
       <div class="desc-icon">&#128176;</div>
@@ -216,7 +205,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
     </div>
   </div>
 
-  <!-- SWP PANEL -->
+  <!-- SWP -->
   <div id="swp" class="panel">
     <div class="desc-box">
       <div class="desc-icon">&#128260;</div>
@@ -265,7 +254,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
     </div>
   </div>
 
-  <!-- IDCW PANEL -->
+  <!-- IDCW -->
   <div id="idcw" class="panel">
     <div class="desc-box">
       <div class="desc-icon">&#128184;</div>
@@ -314,7 +303,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
     </div>
   </div>
 
-  <!-- NCD + SIP PANEL -->
+  <!-- NCD + SIP -->
   <div id="ncd" class="panel">
     <div class="desc-box">
       <div class="desc-icon">&#127974;</div>
@@ -380,263 +369,270 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
     </div>
   </div>
 
-  <!-- DISCLAIMER -->
   <p style="text-align:center;margin-top:44px;font-size:12px;color:var(--muted);font-weight:300;line-height:1.7;">
     &#9888; Calculations are estimates for illustrative purposes only.<br>
     Mutual fund investments are subject to market risks, read all scheme-related documents carefully.
   </p>
 
-  <!-- FOOTER -->
   <div class="footer">
     <div class="footer-name">Prepared by &nbsp; Trivedi Harshil Nileshbhai</div>
     <div class="footer-details">
       ARN &mdash; 325735 &nbsp;&bull;&nbsp; AMFI Registered Mutual Fund Distributor<br>
       &#128231; harshiltrivedi64@gmail.com &nbsp;&bull;&nbsp; &#128222; +91 94082 28744
     </div>
-    <div class="footer-datetime" id="live-clock"></div>
+    <div class="footer-clock" id="live-clock"></div>
   </div>
 
 </div>
 
 <script>
-// ── LIVE CLOCK ──
-function updateClock() {
-  var now = new Date();
-  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  var day = days[now.getDay()];
-  var date = now.getDate();
-  var month = months[now.getMonth()];
-  var year = now.getFullYear();
-  var h = now.getHours();
-  var m = now.getMinutes();
-  var s = now.getSeconds();
-  var ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12; if(h === 0) h = 12;
-  m = m < 10 ? '0'+m : m;
-  s = s < 10 ? '0'+s : s;
-  var el = document.getElementById('live-clock');
-  if(el) el.textContent = day + ', ' + date + ' ' + month + ' ' + year + '  |  ' + h + ':' + m + ':' + s + ' ' + ampm;
-}
-updateClock();
-setInterval(updateClock, 1000);
+(function() {
 
-// ── HELPERS ──
-var CH = {};
-function sy(a, b) { document.getElementById(b).value = document.getElementById(a).value; }
-function fmt(n) {
-  if(n >= 1e7) return '\u20B9' + (n/1e7).toFixed(2) + ' Cr';
-  if(n >= 1e5) return '\u20B9' + (n/1e5).toFixed(2) + ' L';
-  if(n >= 1e3) return '\u20B9' + (n/1e3).toFixed(1) + 'K';
-  return '\u20B9' + Math.round(n).toLocaleString('en-IN');
-}
+  // ── CLOCK ──
+  function updateClock() {
+    var now = new Date();
+    var mo = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var da = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    var ap = h >= 12 ? 'PM' : 'AM';
+    h = h % 12; if (h === 0) h = 12;
+    m = m < 10 ? '0' + m : '' + m;
+    s = s < 10 ? '0' + s : '' + s;
+    var el = document.getElementById('live-clock');
+    if (el) el.textContent = da[now.getDay()] + ', ' + now.getDate() + ' ' + mo[now.getMonth()] + ' ' + now.getFullYear() + '  |  ' + h + ':' + m + ':' + s + ' ' + ap;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-// ── SWITCH TAB ──
-function switchTab(name, btn, cls) {
-  var panels = document.querySelectorAll('.panel');
-  for(var i=0; i<panels.length; i++) panels[i].classList.remove('active');
-  var tabs = document.querySelectorAll('.tab');
-  for(var i=0; i<tabs.length; i++) tabs[i].className = 'tab';
-  document.getElementById(name).classList.add('active');
-  btn.classList.add(cls);
-}
+  // ── HELPERS ──
+  var CH = {};
 
-// ── CHART ──
-function destroyChart(id) { if(CH[id]) { CH[id].destroy(); delete CH[id]; } }
+  window.sy = function(a, b) {
+    document.getElementById(b).value = document.getElementById(a).value;
+  };
 
-function buildChart(id, labels, d1, d2, c1, c2, ttId, l1, l2) {
-  destroyChart(id);
-  var canvas = document.getElementById(id);
-  var ctx = canvas.getContext('2d');
-  var g1 = ctx.createLinearGradient(0,0,0,260);
-  g1.addColorStop(0, c1+'ee'); g1.addColorStop(0.45, c1+'77'); g1.addColorStop(1, c1+'04');
-  var g2 = ctx.createLinearGradient(0,0,0,260);
-  g2.addColorStop(0, c2+'dd'); g2.addColorStop(0.4, c2+'99'); g2.addColorStop(1, c2+'04');
-  CH[id] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        { label:l1, data:d1, borderColor:c1, backgroundColor:g1, borderWidth:2.5, fill:true, pointRadius:0, pointHoverRadius:5, pointHoverBackgroundColor:c1, tension:0.4 },
-        { label:l2, data:d2, borderColor:c2, backgroundColor:g2, borderWidth:2.5, fill:true, pointRadius:0, pointHoverRadius:5, pointHoverBackgroundColor:c2, tension:0.4 }
-      ]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      interaction: { mode:'index', intersect:false },
-      plugins: {
-        legend: { display:false },
-        tooltip: {
-          enabled: false,
-          external: function(context) {
-            var tt = document.getElementById(ttId);
-            var tp = context.tooltip;
-            if(!tp || tp.opacity===0) { tt.style.display='none'; return; }
-            var yr = tp.dataPoints[0].label;
-            var html = '<div class="ctt-yr">YEAR ' + yr + '</div>';
-            for(var i=0; i<tp.dataPoints.length; i++) {
-              var dp = tp.dataPoints[i];
-              var col = i===0 ? c1 : c2;
-              html += '<div class="ctt-row"><span><span class="ctt-dot" style="background:'+col+'"></span>'+dp.dataset.label+'</span><strong>'+fmt(dp.raw)+'</strong></div>';
+  function fmt(n) {
+    if (n >= 1e7) return '\u20B9' + (n / 1e7).toFixed(2) + ' Cr';
+    if (n >= 1e5) return '\u20B9' + (n / 1e5).toFixed(2) + ' L';
+    if (n >= 1e3) return '\u20B9' + (n / 1e3).toFixed(1) + 'K';
+    return '\u20B9' + Math.round(n).toLocaleString('en-IN');
+  }
+
+  // ── SWITCH TAB ──
+  window.switchTab = function(name, btn, cls) {
+    var panels = document.querySelectorAll('.panel');
+    for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+    var tabs = document.querySelectorAll('.tab');
+    for (var i = 0; i < tabs.length; i++) tabs[i].className = 'tab';
+    document.getElementById(name).classList.add('active');
+    btn.classList.add(cls);
+  };
+
+  // ── CHART ──
+  function destroyChart(id) {
+    if (CH[id]) { CH[id].destroy(); delete CH[id]; }
+  }
+
+  function buildChart(id, labels, d1, d2, c1, c2, ttId, l1, l2) {
+    destroyChart(id);
+    var canvas = document.getElementById(id);
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var g1 = ctx.createLinearGradient(0, 0, 0, 260);
+    g1.addColorStop(0, c1 + 'ee'); g1.addColorStop(0.45, c1 + '77'); g1.addColorStop(1, c1 + '04');
+    var g2 = ctx.createLinearGradient(0, 0, 0, 260);
+    g2.addColorStop(0, c2 + 'dd'); g2.addColorStop(0.4, c2 + '99'); g2.addColorStop(1, c2 + '04');
+    CH[id] = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          { label: l1, data: d1, borderColor: c1, backgroundColor: g1, borderWidth: 2.5, fill: true, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: c1, tension: 0.4 },
+          { label: l2, data: d2, borderColor: c2, backgroundColor: g2, borderWidth: 2.5, fill: true, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: c2, tension: 0.4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              var tt = document.getElementById(ttId);
+              if (!tt) return;
+              var tp = context.tooltip;
+              if (!tp || tp.opacity === 0) { tt.style.display = 'none'; return; }
+              var yr = tp.dataPoints[0].label;
+              var html = '<div class="ctt-yr">YEAR ' + yr + '</div>';
+              for (var i = 0; i < tp.dataPoints.length; i++) {
+                var dp = tp.dataPoints[i];
+                var col = i === 0 ? c1 : c2;
+                html += '<div class="ctt-row"><span><span class="ctt-dot" style="background:' + col + '"></span>' + dp.dataset.label + '</span><strong>' + fmt(dp.raw) + '</strong></div>';
+              }
+              tt.innerHTML = html;
+              tt.style.display = 'block';
+              tt.style.left = tp.caretX + 'px';
+              tt.style.top = tp.caretY + 'px';
             }
-            tt.innerHTML = html;
-            tt.style.display = 'block';
-            tt.style.left = tp.caretX + 'px';
-            tt.style.top = tp.caretY + 'px';
           }
-        }
-      },
-      scales: {
-        x: { grid:{color:'#f0f0f0',drawBorder:false}, ticks:{font:{family:'Outfit',size:11},color:'#bbb',callback:function(v,i){return labels[i]+'y';}}, border:{display:false} },
-        y: { grid:{color:'#f0f0f0',drawBorder:false}, ticks:{font:{family:'Outfit',size:11},color:'#bbb',callback:function(v){return fmt(v);}}, border:{display:false} }
-      },
-      animation: { duration:900, easing:'easeInOutQuart' }
+        },
+        scales: {
+          x: { grid: { color: '#f0f0f0', drawBorder: false }, ticks: { font: { family: 'Outfit', size: 11 }, color: '#bbb', callback: function(v, i) { return labels[i] + 'y'; } }, border: { display: false } },
+          y: { grid: { color: '#f0f0f0', drawBorder: false }, ticks: { font: { family: 'Outfit', size: 11 }, color: '#bbb', callback: function(v) { return fmt(v); } }, border: { display: false } }
+        },
+        animation: { duration: 900, easing: 'easeInOutQuart' }
+      }
+    });
+  }
+
+  // ── SIP ──
+  window.calcSIP = function() {
+    var P = +document.getElementById('sip-a').value;
+    var Y = +document.getElementById('sip-y').value;
+    var rate = +document.getElementById('sip-r').value;
+    if (!P || !Y || !rate) return;
+    var r = rate / 100 / 12, n = Y * 12;
+    var mat = P * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+    var inv = P * n, gain = mat - inv;
+    document.getElementById('sip-inv').textContent = fmt(inv);
+    document.getElementById('sip-gain').textContent = fmt(gain);
+    document.getElementById('sip-mat').textContent = fmt(mat);
+    document.getElementById('sip-mul').textContent = (mat / inv).toFixed(2) + 'x your money';
+    var labels = [], d1 = [], d2 = [];
+    for (var y = 1; y <= Y; y++) {
+      var mn = y * 12;
+      labels.push(y);
+      d1.push(+(P * mn).toFixed(0));
+      d2.push(+(P * (((Math.pow(1 + r, mn) - 1) / r) * (1 + r))).toFixed(0));
     }
-  });
-}
+    document.getElementById('sip-res').classList.add('show');
+    setTimeout(function() { buildChart('sip-chart', labels, d1, d2, '#2D6A4F', '#52B788', 'sip-tt', 'Invested', 'Total Value'); }, 60);
+  };
 
-// ── SIP ──
-function calcSIP() {
-  var P = +document.getElementById('sip-a').value;
-  var Y = +document.getElementById('sip-y').value;
-  var rate = +document.getElementById('sip-r').value;
-  if(!P||!Y||!rate) return;
-  var r = rate/100/12, n = Y*12;
-  var mat = P * (((Math.pow(1+r,n)-1)/r) * (1+r));
-  var inv = P*n, gain = mat-inv;
-  document.getElementById('sip-inv').textContent = fmt(inv);
-  document.getElementById('sip-gain').textContent = fmt(gain);
-  document.getElementById('sip-mat').textContent = fmt(mat);
-  document.getElementById('sip-mul').textContent = (mat/inv).toFixed(2) + 'x your money';
-  var labels=[], d1=[], d2=[];
-  for(var y=1; y<=Y; y++) {
-    var mn = y*12;
-    labels.push(y);
-    d1.push(+(P*mn).toFixed(0));
-    d2.push(+(P*(((Math.pow(1+r,mn)-1)/r)*(1+r))).toFixed(0));
-  }
-  document.getElementById('sip-res').classList.add('show');
-  setTimeout(function(){ buildChart('sip-chart',labels,d1,d2,'#2D6A4F','#52B788','sip-tt','Invested','Total Value'); }, 60);
-}
-
-// ── LUMPSUM ──
-function calcLS() {
-  var P = +document.getElementById('ls-a').value;
-  var Y = +document.getElementById('ls-y').value;
-  var rate = +document.getElementById('ls-r').value;
-  if(!P||!Y||!rate) return;
-  var mat = P * Math.pow(1+rate/100, Y), gain = mat-P;
-  document.getElementById('ls-inv').textContent = fmt(P);
-  document.getElementById('ls-gain').textContent = fmt(gain);
-  document.getElementById('ls-mat').textContent = fmt(mat);
-  document.getElementById('ls-mul').textContent = (mat/P).toFixed(2) + 'x your money';
-  var labels=[], d1=[], d2=[];
-  for(var y=1; y<=Y; y++) {
-    labels.push(y);
-    d1.push(P);
-    d2.push(+(P*Math.pow(1+rate/100,y)).toFixed(0));
-  }
-  document.getElementById('ls-res').classList.add('show');
-  setTimeout(function(){ buildChart('ls-chart',labels,d1,d2,'#1B4F72','#5DADE2','ls-tt','Invested','Total Value'); }, 60);
-}
-
-// ── SWP ──
-function calcSWP() {
-  var corpus = +document.getElementById('swp-c').value;
-  var wdraw = +document.getElementById('swp-w').value;
-  var rate = +document.getElementById('swp-r').value;
-  if(!corpus||!wdraw||!rate) return;
-  var mr = rate/100/12;
-  var bal = corpus, totalW = 0, months = 0;
-  var MAX = 40*12, labels=[], d1=[], d2=[];
-  while(bal > 0 && months < MAX) {
-    bal = bal*(1+mr) - wdraw; totalW += wdraw; months++;
-    if(months % 12 === 0) {
-      labels.push(months/12);
-      d1.push(Math.max(0, +bal.toFixed(0)));
-      d2.push(+totalW.toFixed(0));
+  // ── LUMPSUM ──
+  window.calcLS = function() {
+    var P = +document.getElementById('ls-a').value;
+    var Y = +document.getElementById('ls-y').value;
+    var rate = +document.getElementById('ls-r').value;
+    if (!P || !Y || !rate) return;
+    var mat = P * Math.pow(1 + rate / 100, Y), gain = mat - P;
+    document.getElementById('ls-inv').textContent = fmt(P);
+    document.getElementById('ls-gain').textContent = fmt(gain);
+    document.getElementById('ls-mat').textContent = fmt(mat);
+    document.getElementById('ls-mul').textContent = (mat / P).toFixed(2) + 'x your money';
+    var labels = [], d1 = [], d2 = [];
+    for (var y = 1; y <= Y; y++) {
+      labels.push(y);
+      d1.push(P);
+      d2.push(+(P * Math.pow(1 + rate / 100, y)).toFixed(0));
     }
-  }
-  var yrs = Math.floor(months/12), mos = months%12;
-  var durStr = months>=MAX ? '40+ Yrs' : (yrs>0 ? yrs+'y ' : '') + (mos>0 ? mos+'m' : '');
-  document.getElementById('swp-tot').textContent = fmt(totalW);
-  document.getElementById('swp-dur').textContent = durStr;
-  document.getElementById('swp-rem').textContent = months>=MAX ? fmt(Math.max(0,bal)) : '\u20B90';
-  document.getElementById('swp-note').textContent = months>=MAX ? 'Corpus still active' : 'Fully depleted';
-  document.getElementById('swp-res').classList.add('show');
-  setTimeout(function(){ buildChart('swp-chart',labels,d1,d2,'#7B3F00','#D97706','swp-tt','Remaining','Withdrawn'); }, 60);
-}
+    document.getElementById('ls-res').classList.add('show');
+    setTimeout(function() { buildChart('ls-chart', labels, d1, d2, '#1B4F72', '#5DADE2', 'ls-tt', 'Invested', 'Total Value'); }, 60);
+  };
 
-// ── IDCW ──
-function calcIDCW() {
-  var P = +document.getElementById('idcw-a').value;
-  var dRate = +document.getElementById('idcw-d').value;
-  var Y = +document.getElementById('idcw-y').value;
-  if(!P||!dRate||!Y) return;
-  var annual = P*dRate/100, monthly = annual/12, total = annual*Y;
-  document.getElementById('idcw-ann').textContent = fmt(annual);
-  document.getElementById('idcw-mon').textContent = fmt(monthly);
-  document.getElementById('idcw-tot').textContent = fmt(total);
-  document.getElementById('idcw-note').textContent = 'Over ' + Y + ' years';
-  var labels=[], d1=[], d2=[];
-  for(var y=1; y<=Y; y++) {
-    labels.push(y);
-    d1.push(+(annual*y).toFixed(0));
-    d2.push(P);
-  }
-  document.getElementById('idcw-res').classList.add('show');
-  setTimeout(function(){ buildChart('idcw-chart',labels,d1,d2,'#6B21A8','#A855F7','idcw-tt','IDCW Paid','Principal'); }, 60);
-}
+  // ── SWP ──
+  window.calcSWP = function() {
+    var corpus = +document.getElementById('swp-c').value;
+    var wdraw = +document.getElementById('swp-w').value;
+    var rate = +document.getElementById('swp-r').value;
+    if (!corpus || !wdraw || !rate) return;
+    var mr = rate / 100 / 12;
+    var bal = corpus, totalW = 0, months = 0;
+    var MAX = 40 * 12, labels = [], d1 = [], d2 = [];
+    while (bal > 0 && months < MAX) {
+      bal = bal * (1 + mr) - wdraw; totalW += wdraw; months++;
+      if (months % 12 === 0) {
+        labels.push(months / 12);
+        d1.push(Math.max(0, +bal.toFixed(0)));
+        d2.push(+totalW.toFixed(0));
+      }
+    }
+    var yrs = Math.floor(months / 12), mos = months % 12;
+    var durStr = months >= MAX ? '40+ Yrs' : (yrs > 0 ? yrs + 'y ' : '') + (mos > 0 ? mos + 'm' : '');
+    document.getElementById('swp-tot').textContent = fmt(totalW);
+    document.getElementById('swp-dur').textContent = durStr;
+    document.getElementById('swp-rem').textContent = months >= MAX ? fmt(Math.max(0, bal)) : '\u20B90';
+    document.getElementById('swp-note').textContent = months >= MAX ? 'Corpus still active' : 'Fully depleted';
+    document.getElementById('swp-res').classList.add('show');
+    setTimeout(function() { buildChart('swp-chart', labels, d1, d2, '#7B3F00', '#D97706', 'swp-tt', 'Remaining', 'Withdrawn'); }, 60);
+  };
 
-// ── NCD + SIP ──
-var ncdFreq = 'monthly';
-function setNCDFreq(f) {
-  ncdFreq = f;
-  document.getElementById('ncd-freq-m').className = 'toggle-btn' + (f==='monthly' ? ' active' : '');
-  document.getElementById('ncd-freq-a').className = 'toggle-btn' + (f==='annual' ? ' active' : '');
-  document.getElementById('ncd-es-field').style.display = f==='monthly' ? '' : 'none';
-}
-function calcNCD() {
-  var P = +document.getElementById('ncd-p').value;
-  var ir = +document.getElementById('ncd-ir').value;
-  var Y = +document.getElementById('ncd-y').value;
-  var mr = +document.getElementById('ncd-mr').value;
-  var es = +document.getElementById('ncd-es').value || 0;
-  if(!P||!ir||!Y||!mr) return;
-  var labels=[], dP=[], dM=[];
-  var mfCorpus=0, totalInt=0;
-  if(ncdFreq === 'monthly') {
-    var mInt = (P*ir/100)/12, sip = mInt+es, mRate = mr/100/12;
-    totalInt = mInt*Y*12;
-    for(var y=1; y<=Y; y++) {
-      var n = y*12;
-      mfCorpus = sip * (((Math.pow(1+mRate,n)-1)/mRate) * (1+mRate));
-      labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
+  // ── IDCW ──
+  window.calcIDCW = function() {
+    var P = +document.getElementById('idcw-a').value;
+    var dRate = +document.getElementById('idcw-d').value;
+    var Y = +document.getElementById('idcw-y').value;
+    if (!P || !dRate || !Y) return;
+    var annual = P * dRate / 100, monthly = annual / 12, total = annual * Y;
+    document.getElementById('idcw-ann').textContent = fmt(annual);
+    document.getElementById('idcw-mon').textContent = fmt(monthly);
+    document.getElementById('idcw-tot').textContent = fmt(total);
+    document.getElementById('idcw-note').textContent = 'Over ' + Y + ' years';
+    var labels = [], d1 = [], d2 = [];
+    for (var y = 1; y <= Y; y++) {
+      labels.push(y);
+      d1.push(+(annual * y).toFixed(0));
+      d2.push(P);
     }
-    document.getElementById('ncd-strip').innerHTML =
-      '<strong>Monthly NCD Interest:</strong> ' + fmt(mInt) + ' &nbsp;|&nbsp; ' +
-      (es>0 ? '<strong>Extra SIP:</strong> ' + fmt(es) + ' &nbsp;|&nbsp; ' : '') +
-      '<strong>Total Monthly SIP into MF:</strong> ' + fmt(mInt+es);
-  } else {
-    var aInt = P*ir/100;
-    totalInt = aInt*Y;
-    for(var y=1; y<=Y; y++) {
-      mfCorpus = 0;
-      for(var i=1; i<=y; i++) mfCorpus += aInt * Math.pow(1+mr/100, y-i);
-      labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
+    document.getElementById('idcw-res').classList.add('show');
+    setTimeout(function() { buildChart('idcw-chart', labels, d1, d2, '#6B21A8', '#A855F7', 'idcw-tt', 'IDCW Paid', 'Principal'); }, 60);
+  };
+
+  // ── NCD + SIP ──
+  var ncdFreq = 'monthly';
+
+  window.setNCDFreq = function(f) {
+    ncdFreq = f;
+    document.getElementById('ncd-freq-m').className = 'toggle-btn' + (f === 'monthly' ? ' active' : '');
+    document.getElementById('ncd-freq-a').className = 'toggle-btn' + (f === 'annual' ? ' active' : '');
+    document.getElementById('ncd-es-field').style.display = f === 'monthly' ? '' : 'none';
+  };
+
+  window.calcNCD = function() {
+    var P = +document.getElementById('ncd-p').value;
+    var ir = +document.getElementById('ncd-ir').value;
+    var Y = +document.getElementById('ncd-y').value;
+    var mr = +document.getElementById('ncd-mr').value;
+    var es = +document.getElementById('ncd-es').value || 0;
+    if (!P || !ir || !Y || !mr) return;
+    var labels = [], dP = [], dM = [];
+    var mfCorpus = 0, totalInt = 0;
+    if (ncdFreq === 'monthly') {
+      var mInt = (P * ir / 100) / 12, sip = mInt + es, mRate = mr / 100 / 12;
+      totalInt = mInt * Y * 12;
+      for (var y = 1; y <= Y; y++) {
+        var n = y * 12;
+        mfCorpus = sip * (((Math.pow(1 + mRate, n) - 1) / mRate) * (1 + mRate));
+        labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
+      }
+      document.getElementById('ncd-strip').innerHTML =
+        '<strong>Monthly NCD Interest:</strong> ' + fmt(mInt) + ' &nbsp;|&nbsp; ' +
+        (es > 0 ? '<strong>Extra SIP:</strong> ' + fmt(es) + ' &nbsp;|&nbsp; ' : '') +
+        '<strong>Total Monthly SIP into MF:</strong> ' + fmt(mInt + es);
+    } else {
+      var aInt = P * ir / 100;
+      totalInt = aInt * Y;
+      for (var y = 1; y <= Y; y++) {
+        mfCorpus = 0;
+        for (var i = 1; i <= y; i++) mfCorpus += aInt * Math.pow(1 + mr / 100, y - i);
+        labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
+      }
+      document.getElementById('ncd-strip').innerHTML =
+        '<strong>Annual NCD Interest:</strong> ' + fmt(P * ir / 100) + ' reinvested each year as lumpsum into Mutual Fund';
     }
-    document.getElementById('ncd-strip').innerHTML =
-      '<strong>Annual NCD Interest:</strong> ' + fmt(P*ir/100) + ' reinvested each year as lumpsum into Mutual Fund';
-  }
-  var grand = P + mfCorpus;
-  document.getElementById('ncd-principal').textContent = fmt(P);
-  document.getElementById('ncd-int').textContent = fmt(totalInt);
-  document.getElementById('ncd-mf').textContent = fmt(mfCorpus);
-  document.getElementById('ncd-grand').textContent = fmt(grand);
-  document.getElementById('ncd-grand-sub').textContent = (grand/P).toFixed(2) + 'x on NCD investment';
-  document.getElementById('ncd-res').classList.add('show');
-  setTimeout(function(){ buildChart('ncd-chart',labels,dP,dM,'#0F4C75','#1ABC9C','ncd-tt','NCD Principal','MF Corpus'); }, 60);
-}
+    var grand = P + mfCorpus;
+    document.getElementById('ncd-principal').textContent = fmt(P);
+    document.getElementById('ncd-int').textContent = fmt(totalInt);
+    document.getElementById('ncd-mf').textContent = fmt(mfCorpus);
+    document.getElementById('ncd-grand').textContent = fmt(grand);
+    document.getElementById('ncd-grand-sub').textContent = (grand / P).toFixed(2) + 'x on NCD investment';
+    document.getElementById('ncd-res').classList.add('show');
+    setTimeout(function() { buildChart('ncd-chart', labels, dP, dM, '#0F4C75', '#1ABC9C', 'ncd-tt', 'NCD Principal', 'MF Corpus'); }, 60);
+  };
+
+})();
 </script>
 </body>
 </html>
