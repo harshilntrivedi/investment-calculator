@@ -3,636 +3,1191 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Investment Calculator</title>
+<title>Investment Calculator — Trivedi Harshil Nileshbhai</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGMPT3FRW"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-QKGMPT3FRW');
-</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGMPT3FRW');</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--ink:#111;--ink2:#333;--muted:#888;--border:#e8e8e8;--bg:#f7f5f2;--white:#fff;}
+:root{
+  --ink:#111;--ink2:#333;--muted:#888;--border:#e8e8e8;--bg:#f7f5f2;--white:#fff;
+  --green:#2D6A4F;--blue:#1B4F72;--purple:#6B21A8;--orange:#B45309;--teal:#0e7490;--amber:#92400e;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;font-weight:400;min-height:100vh;}
-.page{max-width:1040px;margin:0 auto;padding:48px 24px 100px;}
-.header{margin-bottom:44px;}
-.header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,7vw,72px);font-weight:600;line-height:1;letter-spacing:-1px;}
+.page{max-width:1060px;margin:0 auto;padding:48px 24px 80px;}
+
+.header{margin-bottom:40px;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,6vw,68px);font-weight:600;line-height:1;letter-spacing:-1px;}
 .header-title em{font-style:italic;color:var(--muted);}
 .header-sub{margin-top:10px;font-size:14px;color:var(--muted);font-weight:300;}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:32px;}
-.tab{padding:9px 18px;border-radius:40px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+
+.tab-group-label{font-size:9px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;margin-top:18px;}
+.tab-group-label:first-child{margin-top:0;}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px;}
+.tabs-wrap{margin-bottom:32px;}
+.tab{padding:8px 16px;border-radius:40px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
 .tab:hover{border-color:var(--ink2);color:var(--ink);}
-.t-sip{background:#2D6A4F;border-color:#2D6A4F;color:#fff;}
-.t-ls{background:#1B4F72;border-color:#1B4F72;color:#fff;}
-.t-swp{background:#7B3F00;border-color:#7B3F00;color:#fff;}
-.t-idcw{background:#6B21A8;border-color:#6B21A8;color:#fff;}
+.t-sip{background:var(--green);border-color:var(--green);color:#fff;}
+.t-ls{background:var(--blue);border-color:var(--blue);color:#fff;}
+.t-purple{background:var(--purple);border-color:var(--purple);color:#fff;}
+.t-orange{background:var(--orange);border-color:var(--orange);color:#fff;}
+.t-goal{background:var(--teal);border-color:var(--teal);color:#fff;}
+.t-risk{background:#be123c;border-color:#be123c;color:#fff;}
+.t-tax{background:#854d0e;border-color:#854d0e;color:#fff;}
 .t-ncd{background:#0F4C75;border-color:#0F4C75;color:#fff;}
+
 .panel{display:none;}
-.panel.active{display:block;animation:fadeUp 0.4s ease both;}
-.desc-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-bottom:20px;display:flex;gap:14px;align-items:flex-start;}
-.desc-icon{font-size:22px;flex-shrink:0;margin-top:2px;}
-.desc-title{font-size:13px;font-weight:600;margin-bottom:4px;}
-.desc-text{font-size:13px;color:var(--muted);line-height:1.65;font-weight:300;}
+.panel.active{display:block;animation:fadeUp 0.35s ease both;}
+
+.desc-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;}
+.desc-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.desc-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.desc-text{font-size:12.5px;color:var(--muted);line-height:1.65;font-weight:300;}
 .desc-text strong{color:var(--ink2);font-weight:500;}
-.form-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:32px;}
-.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:28px;}
-@media(max-width:640px){.form-grid{grid-template-columns:1fr;gap:18px;}}
-.field label{display:block;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
-.input-wrap{position:relative;margin-bottom:9px;}
+
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:28px 32px;}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-bottom:24px;}
+.form-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-bottom:24px;}
+.form-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:24px;}
+@media(max-width:700px){.form-grid,.form-grid-4{grid-template-columns:repeat(2,1fr);gap:16px;}}
+@media(max-width:480px){.form-grid,.form-grid-2,.form-grid-4{grid-template-columns:1fr;gap:14px;}}
+
+.field label{display:block;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.input-wrap{position:relative;margin-bottom:8px;}
 .pfx,.sfx{position:absolute;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;}
 .pfx{left:13px;}.sfx{right:13px;}
-input[type=number]{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px 42px 11px 30px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;color:var(--ink);outline:none;transition:border-color 0.2s;-moz-appearance:textfield;}
+input[type=number]{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 40px 10px 28px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;color:var(--ink);outline:none;transition:border-color 0.2s;-moz-appearance:textfield;}
 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 input[type=number]:focus{border-color:var(--ink2);background:#fff;}
 input[type=range]{width:100%;-webkit-appearance:none;height:3px;border-radius:3px;background:var(--border);outline:none;cursor:pointer;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--ink);cursor:pointer;transition:transform 0.15s;}
 input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.25);}
-.btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.2s,transform 0.15s;}
+
+.infl-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding:11px 16px;background:#fffbeb;border:1.5px solid #fde68a;border-radius:12px;cursor:pointer;user-select:none;}
+.infl-row input[type=checkbox]{width:16px;height:16px;accent-color:#B45309;cursor:pointer;flex-shrink:0;}
+.infl-label{font-size:12.5px;font-weight:500;color:#92400e;}
+.infl-label span{font-weight:300;color:#b45309;font-size:12px;}
+.infl-result{display:none;margin-top:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:14px 18px;}
+.infl-result.show{display:block;animation:fadeUp 0.3s ease both;}
+.infl-result-title{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#92400e;margin-bottom:7px;}
+.infl-val{font-family:'Outfit',sans-serif;font-size:clamp(20px,3vw,28px);font-weight:600;color:#78350f;letter-spacing:-0.5px;}
+.infl-sub{font-size:12px;color:#b45309;margin-top:4px;font-weight:300;}
+
+.btn{width:100%;padding:13px;background:var(--ink);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.2s,transform 0.15s;}
 .btn:hover{opacity:0.82;transform:translateY(-1px);}
 .btn:active{transform:translateY(0);}
-.result-section{display:none;margin-top:20px;}
+
+.result-section{display:none;margin-top:18px;}
 .result-section.show{display:block;animation:fadeUp 0.4s ease both;}
-.sep{height:1px;background:var(--border);margin:24px 0 18px;}
-.summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
-.summary-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.sep{height:1px;background:var(--border);margin:20px 0 16px;}
+
+.summary-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.summary-row-2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+.summary-row-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
 @media(max-width:640px){.summary-row,.summary-row-4{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:400px){.summary-row,.summary-row-4{grid-template-columns:1fr;}}
-.sum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 16px;}
-.sum-card.featured{background:var(--ink);border-color:var(--ink);}
-.sum-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
-.sum-card.featured .sum-label{color:rgba(255,255,255,0.45);}
-.sum-val{font-family:'Outfit',sans-serif;font-size:clamp(18px,3vw,26px);font-weight:600;color:var(--ink);line-height:1;letter-spacing:-0.5px;}
-.sum-card.featured .sum-val{color:#fff;}
-.sum-sub{font-size:12px;color:var(--muted);margin-top:5px;font-weight:300;}
-.sum-card.featured .sum-sub{color:rgba(255,255,255,0.4);}
-.chart-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:24px 24px 20px;}
-.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+@media(max-width:380px){.summary-row,.summary-row-2,.summary-row-4{grid-template-columns:1fr;}}
+.sum-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.sum-card.feat{background:var(--ink);border-color:var(--ink);}
+.sum-card.feat-teal{background:var(--teal);border-color:var(--teal);}
+.sum-card.feat-orange{background:#92400e;border-color:#92400e;}
+.sum-card.feat-red{background:#be123c;border-color:#be123c;}
+.sum-card.feat-amber{background:#854d0e;border-color:#854d0e;}
+.sum-label{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.sum-card.feat .sum-label,.sum-card.feat-teal .sum-label,.sum-card.feat-orange .sum-label,.sum-card.feat-red .sum-label,.sum-card.feat-amber .sum-label{color:rgba(255,255,255,0.45);}
+.sum-val{font-family:'Outfit',sans-serif;font-size:clamp(17px,2.8vw,24px);font-weight:600;color:var(--ink);line-height:1;letter-spacing:-0.5px;}
+.sum-card.feat .sum-val,.sum-card.feat-teal .sum-val,.sum-card.feat-orange .sum-val,.sum-card.feat-red .sum-val,.sum-card.feat-amber .sum-val{color:#fff;}
+.sum-sub{font-size:11.5px;color:var(--muted);margin-top:4px;font-weight:300;}
+.sum-card.feat .sum-sub,.sum-card.feat-teal .sum-sub,.sum-card.feat-orange .sum-sub,.sum-card.feat-red .sum-sub,.sum-card.feat-amber .sum-sub{color:rgba(255,255,255,0.4);}
+
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:22px 22px 18px;margin-top:16px;}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
 .chart-title{font-size:13px;font-weight:600;}
-.chart-legend{display:flex;gap:16px;}
-.legend-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+.chart-legend{display:flex;gap:14px;}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);}
 .legend-dot{width:10px;height:10px;border-radius:3px;}
-.chart-wrap{position:relative;height:260px;}
-.ctt{position:absolute;background:var(--ink);color:#fff;border-radius:10px;padding:10px 14px;font-size:12px;pointer-events:none;display:none;z-index:10;white-space:nowrap;transform:translate(-50%,-115%);box-shadow:0 8px 24px rgba(0,0,0,0.18);}
-.ctt-yr{font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:6px;}
-.ctt-row{display:flex;justify-content:space-between;gap:20px;margin-bottom:3px;align-items:center;}
+.chart-wrap{position:relative;height:240px;}
+.ctt{position:absolute;background:var(--ink);color:#fff;border-radius:10px;padding:9px 13px;font-size:12px;pointer-events:none;display:none;z-index:10;white-space:nowrap;transform:translate(-50%,-115%);box-shadow:0 8px 24px rgba(0,0,0,0.18);}
+.ctt-yr{font-size:10px;font-weight:600;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:5px;}
+.ctt-row{display:flex;justify-content:space-between;gap:18px;margin-bottom:3px;align-items:center;}
 .ctt-dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:middle;}
-.toggle-group{display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;}
-.toggle-btn{flex:1;padding:9px 12px;border:none;border-radius:7px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+
+.toggle-group{display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:22px;}
+.toggle-btn{flex:1;padding:8px 10px;border:none;border-radius:7px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;}
 .toggle-btn.active{background:var(--ink);color:#fff;}
-.info-strip{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#1e40af;line-height:1.7;}
-.footer{margin-top:48px;border-top:1px solid var(--border);padding-top:28px;text-align:center;}
-.footer-name{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:6px;}
+.info-strip{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:11px 16px;margin-bottom:14px;font-size:12px;color:#1e40af;line-height:1.7;}
+
+.mode-tabs{display:flex;gap:0;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:24px;}
+.mode-tab{flex:1;padding:10px 8px;border:none;border-radius:9px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;}
+.mode-tab.active{background:var(--teal);color:#fff;}
+
+.goal-highlight{background:linear-gradient(135deg,#ecfeff,#f0fdfa);border:2px solid #06b6d4;border-radius:18px;padding:24px 28px;margin-bottom:16px;text-align:center;}
+.goal-highlight-label{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.goal-highlight-val{font-family:'Outfit',sans-serif;font-size:clamp(32px,6vw,56px);font-weight:600;color:var(--teal);line-height:1;letter-spacing:-1px;}
+.goal-highlight-sub{font-size:13px;color:#0891b2;margin-top:6px;font-weight:300;}
+
+/* Risk Quiz */
+.quiz-step{display:none;}
+.quiz-step.active{display:block;animation:fadeUp 0.3s ease both;}
+.quiz-q{font-size:18px;font-weight:600;margin-bottom:6px;line-height:1.4;}
+.quiz-sub{font-size:13px;color:var(--muted);margin-bottom:24px;font-weight:300;}
+.quiz-options{display:flex;flex-direction:column;gap:10px;}
+.quiz-opt{padding:14px 18px;border:1.5px solid var(--border);border-radius:12px;background:var(--white);cursor:pointer;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);transition:all 0.2s;text-align:left;}
+.quiz-opt:hover{border-color:var(--ink2);background:var(--bg);}
+.quiz-opt.selected{border-color:#be123c;background:#fff1f2;color:#be123c;font-weight:500;}
+.quiz-progress{display:flex;gap:6px;margin-bottom:28px;}
+.quiz-dot{height:4px;flex:1;border-radius:4px;background:var(--border);transition:background 0.3s;}
+.quiz-dot.done{background:#be123c;}
+.quiz-nav{display:flex;gap:10px;margin-top:20px;}
+.quiz-btn{flex:1;padding:12px;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.quiz-btn-next{background:var(--ink);color:#fff;}
+.quiz-btn-next:hover{opacity:0.82;}
+.quiz-btn-back{background:var(--bg);color:var(--muted);border:1.5px solid var(--border);}
+.quiz-btn-back:hover{color:var(--ink);}
+.risk-result{display:none;}
+.risk-result.show{display:block;animation:fadeUp 0.4s ease both;}
+.risk-badge{display:inline-block;padding:8px 20px;border-radius:40px;font-size:13px;font-weight:600;margin-bottom:16px;}
+.risk-badge.conservative{background:#dcfce7;color:#166534;}
+.risk-badge.moderate{background:#fef9c3;color:#854d0e;}
+.risk-badge.aggressive{background:#fee2e2;color:#991b1b;}
+.risk-title{font-size:24px;font-weight:600;margin-bottom:6px;}
+.risk-desc{font-size:13px;color:var(--muted);font-weight:300;line-height:1.7;margin-bottom:24px;}
+.fund-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:560px){.fund-grid{grid-template-columns:1fr;}}
+.fund-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.fund-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.fund-desc{font-size:12px;color:var(--muted);font-weight:300;line-height:1.6;margin-bottom:10px;}
+.fund-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.fund-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.tag-return{background:#dcfce7;color:#166534;}
+.tag-horizon{background:#dbeafe;color:#1e40af;}
+.risk-bar-wrap{margin-top:8px;}
+.risk-bar-label{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.risk-bar{height:5px;border-radius:5px;background:var(--border);overflow:hidden;}
+.risk-bar-fill{height:100%;border-radius:5px;transition:width 0.7s ease;}
+.quiz-restart{margin-top:16px;background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:10px 20px;border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+.quiz-restart:hover{color:var(--ink);border-color:var(--ink);}
+.risk-disclaimer{font-size:11px;color:var(--muted);margin-top:16px;padding:10px 14px;background:var(--bg);border-radius:10px;line-height:1.7;font-weight:300;}
+
+/* Tax Section */
+.tax-tabs{display:flex;gap:0;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:4px;margin-bottom:28px;flex-wrap:wrap;}
+.tax-tab{flex:1;min-width:120px;padding:10px 8px;border:none;border-radius:9px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;}
+.tax-tab.active{background:#854d0e;color:#fff;}
+.tax-panel{display:none;}
+.tax-panel.active{display:block;animation:fadeUp 0.3s ease both;}
+.tax-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.tax-table th{background:var(--bg);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.tax-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5;}
+.tax-table tr:last-child td{border-bottom:none;}
+.tax-table tr:hover td{background:#fafafa;}
+.tax-highlight{background:#fef9c3;border-radius:6px;padding:2px 8px;font-weight:500;color:#854d0e;display:inline-block;}
+.tax-green{background:#dcfce7;border-radius:6px;padding:2px 8px;font-weight:500;color:#166534;display:inline-block;}
+.tax-red{background:#fee2e2;border-radius:6px;padding:2px 8px;font-weight:500;color:#991b1b;display:inline-block;}
+.tax-note{background:#f0f7ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px 18px;font-size:12.5px;color:#1e40af;line-height:1.8;margin-bottom:16px;}
+.tax-section-title{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;margin-top:6px;}
+.regime-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:500px){.regime-grid{grid-template-columns:1fr;}}
+.regime-card{border-radius:16px;padding:20px;border:2px solid var(--border);}
+.regime-card.old{border-color:#d97706;background:#fffbeb;}
+.regime-card.new{border-color:#0e7490;background:#ecfeff;}
+.regime-card-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.regime-card.old .regime-card-title{color:#92400e;}
+.regime-card.new .regime-card-title{color:#0e7490;}
+.regime-card-sub{font-size:12px;font-weight:300;color:var(--muted);margin-bottom:14px;}
+.regime-point{font-size:12.5px;line-height:1.8;color:var(--ink2);padding:3px 0;}
+.regime-good{color:#166534;font-weight:500;}
+.regime-bad{color:#991b1b;}
+.regime-who{margin-top:12px;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:500;}
+.regime-card.old .regime-who{background:#fde68a;color:#92400e;}
+.regime-card.new .regime-who{background:#a5f3fc;color:#0e7490;}
+
+/* SIP Redemption */
+.redemp-result-row{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.redemp-unit-row{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;font-size:12px;}
+@media(max-width:500px){.redemp-unit-row{grid-template-columns:1fr 1fr;}}
+.redemp-unit-row.ltcg-row{border-color:#86efac;background:#f0fdf4;}
+.redemp-unit-row.stcg-row{border-color:#fca5a5;background:#fef2f2;}
+.redemp-unit-label{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.redemp-unit-val{font-size:13px;font-weight:600;color:var(--ink);}
+.redemp-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-ltcg{background:#dcfce7;color:#166534;}
+.badge-stcg{background:#fee2e2;color:#991b1b;}
+
+/* Did you know */
+.tip-box{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:22px 26px;margin-top:44px;position:relative;overflow:hidden;}
+.tip-box::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--green),#52B788);}
+.tip-label{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);margin-bottom:10px;}
+.tip-text{font-size:14.5px;color:var(--ink2);line-height:1.75;font-weight:300;}
+.tip-text strong{font-weight:600;color:var(--ink);}
+.tip-dots{display:flex;gap:6px;margin-top:14px;}
+.tip-dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:background 0.3s;cursor:pointer;}
+.tip-dot.active{background:var(--green);}
+
+.disclaimer{text-align:center;margin-top:40px;font-size:12px;color:var(--muted);font-weight:300;line-height:1.8;}
+.footer{margin-top:44px;border-top:1px solid var(--border);padding-top:24px;text-align:center;}
+.footer-name{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:5px;}
 .footer-details{font-size:11px;color:var(--muted);font-weight:300;line-height:2;}
-.footer-clock{font-size:11px;color:var(--muted);margin-top:6px;font-weight:300;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.footer-clock{font-size:11px;color:var(--muted);margin-top:5px;font-weight:300;}
+.footer-copy{font-size:11px;color:var(--muted);margin-top:6px;font-weight:300;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 <div class="page">
 
-  <div class="header">
-    <div class="header-title">Investment<br><em>Calculator</em></div>
-    <div class="header-sub">SIP &middot; Lumpsum &middot; SWP &middot; IDCW &middot; NCD+SIP &mdash; plan your financial future</div>
-  </div>
+<div class="header">
+  <div class="header-title">Investment<br><em>Calculator</em></div>
+  <div class="header-sub">Plan &middot; Calculate &middot; Grow &mdash; your complete financial planning toolkit</div>
+</div>
 
+<div class="tabs-wrap">
+  <div class="tab-group-label">&#128200; Calculators</div>
   <div class="tabs">
-    <button class="tab t-sip" onclick="switchTab('sip',this,'t-sip')">&#128200; SIP</button>
-    <button class="tab" onclick="switchTab('ls',this,'t-ls')">&#128176; Lumpsum</button>
-    <button class="tab" onclick="switchTab('swp',this,'t-swp')">&#128260; SWP</button>
-    <button class="tab" onclick="switchTab('idcw',this,'t-idcw')">&#128184; IDCW</button>
+    <button class="tab t-sip"  onclick="switchTab('sip',this,'t-sip')">&#128200; SIP</button>
+    <button class="tab"        onclick="switchTab('ls',this,'t-ls')">&#128176; Lumpsum</button>
+    <button class="tab"        onclick="switchTab('idcw',this,'t-purple')">&#128184; IDCW</button>
+    <button class="tab"        onclick="switchTab('stepup',this,'t-orange')">&#128293; Step-Up SIP</button>
+  </div>
+  <div class="tab-group-label">&#127919; Planners</div>
+  <div class="tabs">
+    <button class="tab" onclick="switchTab('goal',this,'t-goal')">&#127919; Goal Planner</button>
+  </div>
+  <div class="tab-group-label">&#128736; Tools</div>
+  <div class="tabs">
+    <button class="tab" onclick="switchTab('risk',this,'t-risk')">&#129504; Risk Profile</button>
+    <button class="tab" onclick="switchTab('tax',this,'t-tax')">&#128196; Tax Guide</button>
     <button class="tab" onclick="switchTab('ncd',this,'t-ncd')">&#127974; NCD + SIP</button>
   </div>
+</div>
 
-  <!-- SIP -->
-  <div id="sip" class="panel active">
-    <div class="desc-box">
-      <div class="desc-icon">&#128200;</div>
-      <div>
-        <div class="desc-title">Systematic Investment Plan (SIP)</div>
-        <div class="desc-text">Invest a <strong>fixed amount every month</strong> into a mutual fund. Your money grows through <strong>rupee cost averaging</strong> — you buy more units when prices are low and fewer when high. Ideal for salaried individuals building long-term wealth with consistent monthly discipline.</div>
-      </div>
+<!-- ═══ SIP ═══ -->
+<div id="sip" class="panel active">
+  <div class="desc-box"><div class="desc-icon">&#128200;</div><div><div class="desc-title">Systematic Investment Plan (SIP)</div><div class="desc-text">Invest a <strong>fixed amount every month</strong> into a mutual fund. Your money grows through <strong>rupee cost averaging</strong> — buy more units when prices are low, fewer when high. Ideal for building long-term wealth with monthly discipline.</div></div></div>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="field"><label>Monthly Investment</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="sip-a" value="10000" min="100" oninput="sy('sip-a','sip-ar')"></div><input type="range" id="sip-ar" min="500" max="500000" step="500" value="10000" oninput="sy('sip-ar','sip-a')"></div>
+      <div class="field"><label>Time Horizon</label><div class="input-wrap"><input type="number" id="sip-y" value="10" min="1" max="40" oninput="sy('sip-y','sip-yr')"><span class="sfx">Yrs</span></div><input type="range" id="sip-yr" min="1" max="40" step="1" value="10" oninput="sy('sip-yr','sip-y')"></div>
+      <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="sip-r" value="12" min="1" max="30" step="0.1" oninput="sy('sip-r','sip-rr')"><span class="sfx">%</span></div><input type="range" id="sip-rr" min="1" max="30" step="0.1" value="12" oninput="sy('sip-rr','sip-r')"></div>
     </div>
-    <div class="form-card">
-      <div class="form-grid">
-        <div class="field">
-          <label>Monthly Investment</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="sip-a" value="10000" min="100" oninput="sy('sip-a','sip-ar')"></div>
-          <input type="range" id="sip-ar" min="500" max="500000" step="500" value="10000" oninput="sy('sip-ar','sip-a')">
-        </div>
-        <div class="field">
-          <label>Time Horizon</label>
-          <div class="input-wrap"><input type="number" id="sip-y" value="10" min="1" max="40" oninput="sy('sip-y','sip-yr')"><span class="sfx">Yrs</span></div>
-          <input type="range" id="sip-yr" min="1" max="40" step="1" value="10" oninput="sy('sip-yr','sip-y')">
-        </div>
-        <div class="field">
-          <label>Expected Return (p.a.)</label>
-          <div class="input-wrap"><input type="number" id="sip-r" value="12" min="1" max="50" step="0.1" oninput="sy('sip-r','sip-rr')"><span class="sfx">%</span></div>
-          <input type="range" id="sip-rr" min="1" max="30" step="0.1" value="12" oninput="sy('sip-rr','sip-r')">
-        </div>
+    <label class="infl-row" for="sip-infl"><input type="checkbox" id="sip-infl" onchange="onInflChange('sip')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real purchasing power of your returns</span></span></label>
+    <button class="btn" onclick="calcSIP()">Calculate Returns &rarr;</button>
+    <div class="result-section" id="sip-res">
+      <div class="sep"></div>
+      <div class="summary-row">
+        <div class="sum-card"><div class="sum-label">Total Invested</div><div class="sum-val" id="sip-inv">-</div><div class="sum-sub">Principal</div></div>
+        <div class="sum-card"><div class="sum-label">Est. Returns</div><div class="sum-val" id="sip-gain">-</div><div class="sum-sub">Wealth gained</div></div>
+        <div class="sum-card feat"><div class="sum-label">Maturity Value</div><div class="sum-val" id="sip-mat">-</div><div class="sum-sub" id="sip-mul">-</div></div>
       </div>
-      <button class="btn" onclick="calcSIP()">Calculate Returns &rarr;</button>
-      <div class="result-section" id="sip-res">
-        <div class="sep"></div>
-        <div class="summary-row">
-          <div class="sum-card"><div class="sum-label">Total Invested</div><div class="sum-val" id="sip-inv">-</div><div class="sum-sub">Principal</div></div>
-          <div class="sum-card"><div class="sum-label">Est. Returns</div><div class="sum-val" id="sip-gain">-</div><div class="sum-sub">Wealth gained</div></div>
-          <div class="sum-card featured"><div class="sum-label">Maturity Value</div><div class="sum-val" id="sip-mat">-</div><div class="sum-sub" id="sip-mul">-</div></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Growth over time</div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#2D6A4F"></div>Invested</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#52B788"></div>Total Value</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="sip-chart"></canvas><div class="ctt" id="sip-tt"></div></div>
-        </div>
-      </div>
+      <div class="infl-result" id="sip-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Value (6% p.a.)</div><div class="infl-val" id="sip-infl-val">-</div><div class="infl-sub">Real purchasing power in today's rupees</div></div>
+      <div class="chart-card"><div class="chart-header"><div class="chart-title">Growth over time</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#2D6A4F"></div>Invested</div><div class="legend-item"><div class="legend-dot" style="background:#52B788"></div>Value</div></div></div><div class="chart-wrap"><canvas id="sip-chart"></canvas><div class="ctt" id="sip-tt"></div></div></div>
     </div>
   </div>
+</div>
 
-  <!-- LUMPSUM -->
-  <div id="ls" class="panel">
-    <div class="desc-box">
-      <div class="desc-icon">&#128176;</div>
-      <div>
-        <div class="desc-title">Lumpsum Investment</div>
-        <div class="desc-text">Invest a <strong>large one-time amount</strong> and let compound interest do the heavy lifting. Best suited when you have a windfall — bonus, inheritance, or sale proceeds — and want to deploy it all at once for <strong>maximum compounding benefit</strong> over a long period.</div>
-      </div>
+<!-- ═══ LUMPSUM ═══ -->
+<div id="ls" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#128176;</div><div><div class="desc-title">Lumpsum Investment</div><div class="desc-text">Invest a <strong>large one-time amount</strong> and let compound interest do the heavy lifting. Best when you have a windfall — bonus, inheritance, or sale proceeds — and want to deploy it all at once for <strong>maximum compounding benefit</strong>.</div></div></div>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="field"><label>Investment Amount</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ls-a" value="100000" min="1000" oninput="sy('ls-a','ls-ar')"></div><input type="range" id="ls-ar" min="1000" max="10000000" step="1000" value="100000" oninput="sy('ls-ar','ls-a')"></div>
+      <div class="field"><label>Time Horizon</label><div class="input-wrap"><input type="number" id="ls-y" value="10" min="1" max="40" oninput="sy('ls-y','ls-yr')"><span class="sfx">Yrs</span></div><input type="range" id="ls-yr" min="1" max="40" step="1" value="10" oninput="sy('ls-yr','ls-y')"></div>
+      <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="ls-r" value="12" min="1" max="30" step="0.1" oninput="sy('ls-r','ls-rr')"><span class="sfx">%</span></div><input type="range" id="ls-rr" min="1" max="30" step="0.1" value="12" oninput="sy('ls-rr','ls-r')"></div>
     </div>
-    <div class="form-card">
-      <div class="form-grid">
-        <div class="field">
-          <label>Investment Amount</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ls-a" value="100000" min="1000" oninput="sy('ls-a','ls-ar')"></div>
-          <input type="range" id="ls-ar" min="1000" max="10000000" step="1000" value="100000" oninput="sy('ls-ar','ls-a')">
-        </div>
-        <div class="field">
-          <label>Time Horizon</label>
-          <div class="input-wrap"><input type="number" id="ls-y" value="10" min="1" max="40" oninput="sy('ls-y','ls-yr')"><span class="sfx">Yrs</span></div>
-          <input type="range" id="ls-yr" min="1" max="40" step="1" value="10" oninput="sy('ls-yr','ls-y')">
-        </div>
-        <div class="field">
-          <label>Expected Return (p.a.)</label>
-          <div class="input-wrap"><input type="number" id="ls-r" value="12" min="1" max="50" step="0.1" oninput="sy('ls-r','ls-rr')"><span class="sfx">%</span></div>
-          <input type="range" id="ls-rr" min="1" max="30" step="0.1" value="12" oninput="sy('ls-rr','ls-r')">
-        </div>
+    <label class="infl-row" for="ls-infl"><input type="checkbox" id="ls-infl" onchange="onInflChange('ls')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real value of your returns</span></span></label>
+    <button class="btn" onclick="calcLS()">Calculate Returns &rarr;</button>
+    <div class="result-section" id="ls-res">
+      <div class="sep"></div>
+      <div class="summary-row">
+        <div class="sum-card"><div class="sum-label">Invested Amount</div><div class="sum-val" id="ls-inv">-</div><div class="sum-sub">One-time</div></div>
+        <div class="sum-card"><div class="sum-label">Est. Returns</div><div class="sum-val" id="ls-gain">-</div><div class="sum-sub">Wealth gained</div></div>
+        <div class="sum-card feat"><div class="sum-label">Maturity Value</div><div class="sum-val" id="ls-mat">-</div><div class="sum-sub" id="ls-mul">-</div></div>
       </div>
-      <button class="btn" onclick="calcLS()">Calculate Returns &rarr;</button>
-      <div class="result-section" id="ls-res">
-        <div class="sep"></div>
-        <div class="summary-row">
-          <div class="sum-card"><div class="sum-label">Invested Amount</div><div class="sum-val" id="ls-inv">-</div><div class="sum-sub">One-time</div></div>
-          <div class="sum-card"><div class="sum-label">Est. Returns</div><div class="sum-val" id="ls-gain">-</div><div class="sum-sub">Wealth gained</div></div>
-          <div class="sum-card featured"><div class="sum-label">Maturity Value</div><div class="sum-val" id="ls-mat">-</div><div class="sum-sub" id="ls-mul">-</div></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Growth over time</div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#1B4F72"></div>Invested</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#5DADE2"></div>Total Value</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="ls-chart"></canvas><div class="ctt" id="ls-tt"></div></div>
-        </div>
-      </div>
+      <div class="infl-result" id="ls-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Value (6% p.a.)</div><div class="infl-val" id="ls-infl-val">-</div><div class="infl-sub">Real purchasing power in today's rupees</div></div>
+      <div class="chart-card"><div class="chart-header"><div class="chart-title">Growth over time</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#1B4F72"></div>Invested</div><div class="legend-item"><div class="legend-dot" style="background:#5DADE2"></div>Value</div></div></div><div class="chart-wrap"><canvas id="ls-chart"></canvas><div class="ctt" id="ls-tt"></div></div></div>
     </div>
   </div>
+</div>
 
-  <!-- SWP -->
-  <div id="swp" class="panel">
-    <div class="desc-box">
-      <div class="desc-icon">&#128260;</div>
-      <div>
-        <div class="desc-title">Systematic Withdrawal Plan (SWP)</div>
-        <div class="desc-text">Already have a corpus? SWP lets you <strong>withdraw a fixed amount every month</strong> while the remaining balance continues to earn returns. Think of it like a self-made pension — <strong>perfect for retirees</strong> or anyone wanting regular income from investments without liquidating everything at once.</div>
+<!-- ═══ IDCW ═══ -->
+<div id="idcw" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#128184;</div><div><div class="desc-title">Income Distribution cum Capital Withdrawal (IDCW)</div><div class="desc-text">Previously the "Dividend" option. The fund periodically <strong>distributes a portion of profits</strong> back to you as income. Payout depends on the fund's declared distribution rate and NAV. Suitable for investors wanting <strong>periodic passive income</strong> while staying invested.</div></div></div>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="field"><label>Investment Amount</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="idcw-a" value="500000" min="10000" oninput="sy('idcw-a','idcw-ar')"></div><input type="range" id="idcw-ar" min="10000" max="20000000" step="10000" value="500000" oninput="sy('idcw-ar','idcw-a')"></div>
+      <div class="field"><label>Annual IDCW Rate</label><div class="input-wrap"><input type="number" id="idcw-d" value="8" min="1" max="30" step="0.1" oninput="sy('idcw-d','idcw-dr')"><span class="sfx">%</span></div><input type="range" id="idcw-dr" min="1" max="30" step="0.1" value="8" oninput="sy('idcw-dr','idcw-d')"></div>
+      <div class="field"><label>Time Horizon</label><div class="input-wrap"><input type="number" id="idcw-y" value="10" min="1" max="40" oninput="sy('idcw-y','idcw-yr')"><span class="sfx">Yrs</span></div><input type="range" id="idcw-yr" min="1" max="40" step="1" value="10" oninput="sy('idcw-yr','idcw-y')"></div>
+    </div>
+    <label class="infl-row" for="idcw-infl"><input type="checkbox" id="idcw-infl" onchange="onInflChange('idcw')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real purchasing power of total payouts</span></span></label>
+    <button class="btn" onclick="calcIDCW()">Calculate IDCW &rarr;</button>
+    <div class="result-section" id="idcw-res">
+      <div class="sep"></div>
+      <div class="summary-row">
+        <div class="sum-card"><div class="sum-label">Annual Payout</div><div class="sum-val" id="idcw-ann">-</div><div class="sum-sub">Per year</div></div>
+        <div class="sum-card"><div class="sum-label">Monthly Payout</div><div class="sum-val" id="idcw-mon">-</div><div class="sum-sub">Est. per month</div></div>
+        <div class="sum-card feat"><div class="sum-label">Total IDCW Received</div><div class="sum-val" id="idcw-tot">-</div><div class="sum-sub" id="idcw-note">-</div></div>
+      </div>
+      <div class="infl-result" id="idcw-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Value (6% p.a.)</div><div class="infl-val" id="idcw-infl-val">-</div><div class="infl-sub">Real purchasing power of total IDCW in today's rupees</div></div>
+      <div class="chart-card"><div class="chart-header"><div class="chart-title">Cumulative IDCW over time</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#6B21A8"></div>IDCW Paid</div><div class="legend-item"><div class="legend-dot" style="background:#A855F7"></div>Principal</div></div></div><div class="chart-wrap"><canvas id="idcw-chart"></canvas><div class="ctt" id="idcw-tt"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ STEP-UP SIP ═══ -->
+<div id="stepup" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#128293;</div><div><div class="desc-title">Step-Up SIP Calculator</div><div class="desc-text">Every year as your income grows, <strong>increase your SIP by a fixed amount</strong>. Even adding ₹1,000 more each year can dramatically boost your final corpus. See the <strong>difference between a flat SIP and a growing SIP</strong> — the results will surprise you.</div></div></div>
+  <div class="form-card">
+    <div class="form-grid">
+      <div class="field"><label>Starting Monthly SIP</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="su-a" value="10000" min="100" oninput="sy('su-a','su-ar')"></div><input type="range" id="su-ar" min="500" max="200000" step="500" value="10000" oninput="sy('su-ar','su-a')"></div>
+      <div class="field"><label>Annual Increase Amount</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="su-s" value="1000" min="100" max="50000" step="100" oninput="sy('su-s','su-sr')"></div><input type="range" id="su-sr" min="100" max="50000" step="100" value="1000" oninput="sy('su-sr','su-s')"></div>
+      <div class="field"><label>Time Horizon</label><div class="input-wrap"><input type="number" id="su-y" value="10" min="1" max="40" oninput="sy('su-y','su-yr')"><span class="sfx">Yrs</span></div><input type="range" id="su-yr" min="1" max="40" step="1" value="10" oninput="sy('su-yr','su-y')"></div>
+      <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="su-r" value="12" min="1" max="30" step="0.1" oninput="sy('su-r','su-rr')"><span class="sfx">%</span></div><input type="range" id="su-rr" min="1" max="30" step="0.1" value="12" oninput="sy('su-rr','su-r')"></div>
+    </div>
+    <label class="infl-row" for="su-infl"><input type="checkbox" id="su-infl" onchange="onInflChange('stepup')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real value of step-up corpus</span></span></label>
+    <button class="btn" onclick="calcStepUp()">Calculate Step-Up Returns &rarr;</button>
+    <div class="result-section" id="su-res">
+      <div class="sep"></div>
+      <div class="summary-row-4">
+        <div class="sum-card"><div class="sum-label">Total Invested</div><div class="sum-val" id="su-inv">-</div><div class="sum-sub">With step-up</div></div>
+        <div class="sum-card feat-orange"><div class="sum-label">Step-Up Corpus</div><div class="sum-val" id="su-mat">-</div><div class="sum-sub" id="su-mul">-</div></div>
+        <div class="sum-card"><div class="sum-label">Flat SIP Corpus</div><div class="sum-val" id="su-flat">-</div><div class="sum-sub">Same SIP, no step-up</div></div>
+        <div class="sum-card feat"><div class="sum-label">Extra Gained</div><div class="sum-val" id="su-extra">-</div><div class="sum-sub">Power of stepping up</div></div>
+      </div>
+      <div class="infl-result" id="stepup-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Step-Up Corpus (6% p.a.)</div><div class="infl-val" id="stepup-infl-val">-</div><div class="infl-sub">Real purchasing power of your step-up corpus in today's rupees</div></div>
+      <div class="chart-card"><div class="chart-header"><div class="chart-title">Step-Up SIP vs Flat SIP</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#B45309"></div>Step-Up</div><div class="legend-item"><div class="legend-dot" style="background:#FCD34D"></div>Flat SIP</div></div></div><div class="chart-wrap"><canvas id="su-chart"></canvas><div class="ctt" id="su-tt"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ GOAL PLANNER ═══ -->
+<div id="goal" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#127919;</div><div><div class="desc-title">Goal Planner — Goal SIP &middot; Retirement &middot; SWP</div><div class="desc-text">Your <strong>complete financial journey in one place</strong> — calculate the SIP needed for any goal, plan your retirement corpus, and see how long your corpus lasts with monthly withdrawals.</div></div></div>
+  <div class="form-card">
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="mode-goal" onclick="switchMode('goal-mode','mode-goal')">&#127919; Goal SIP</button>
+      <button class="mode-tab" id="mode-retire" onclick="switchMode('retire-mode','mode-retire')">&#127958; Retirement</button>
+      <button class="mode-tab" id="mode-swp" onclick="switchMode('swp-mode','mode-swp')">&#128260; SWP</button>
+    </div>
+
+    <!-- Goal SIP -->
+    <div id="goal-mode" class="quiz-step active">
+      <div class="form-grid">
+        <div class="field"><label>Target Goal Amount</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="gs-t" value="10000000" min="10000" oninput="sy('gs-t','gs-tr')"></div><input type="range" id="gs-tr" min="100000" max="100000000" step="100000" value="10000000" oninput="sy('gs-tr','gs-t')"></div>
+        <div class="field"><label>Time Horizon</label><div class="input-wrap"><input type="number" id="gs-y" value="10" min="1" max="40" oninput="sy('gs-y','gs-yr')"><span class="sfx">Yrs</span></div><input type="range" id="gs-yr" min="1" max="40" step="1" value="10" oninput="sy('gs-yr','gs-y')"></div>
+        <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="gs-r" value="12" min="1" max="30" step="0.1" oninput="sy('gs-r','gs-rr')"><span class="sfx">%</span></div><input type="range" id="gs-rr" min="1" max="30" step="0.1" value="12" oninput="sy('gs-rr','gs-r')"></div>
+      </div>
+      <label class="infl-row" for="gs-infl"><input type="checkbox" id="gs-infl"><span class="infl-label">Adjust Goal for 6% Inflation &nbsp;<span>— inflates your target to match future cost</span></span></label>
+      <button class="btn" onclick="calcGoalSIP()">Calculate Required SIP &rarr;</button>
+      <div class="result-section" id="gs-res">
+        <div class="sep"></div>
+        <div class="goal-highlight"><div class="goal-highlight-label">Required Monthly SIP</div><div class="goal-highlight-val" id="gs-sip">-</div><div class="goal-highlight-sub" id="gs-sip-sub">invest every month to reach your goal</div></div>
+        <div class="summary-row">
+          <div class="sum-card"><div class="sum-label">Your Goal</div><div class="sum-val" id="gs-target">-</div><div class="sum-sub" id="gs-target-sub">Target amount</div></div>
+          <div class="sum-card"><div class="sum-label">Total You Invest</div><div class="sum-val" id="gs-invested">-</div><div class="sum-sub">Principal over period</div></div>
+          <div class="sum-card feat-teal"><div class="sum-label">Returns Earned</div><div class="sum-val" id="gs-gain">-</div><div class="sum-sub">Mutual fund does this</div></div>
+        </div>
+        <div class="infl-result" id="gs-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Goal</div><div class="infl-val" id="gs-infl-val">-</div><div class="infl-sub" id="gs-infl-sub">-</div></div>
+        <div class="chart-card"><div class="chart-header"><div class="chart-title">SIP accumulation towards goal</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#0e7490"></div>Invested</div><div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Corpus</div></div></div><div class="chart-wrap"><canvas id="gs-chart"></canvas><div class="ctt" id="gs-tt"></div></div></div>
       </div>
     </div>
-    <div class="form-card">
+
+    <!-- Retirement -->
+    <div id="retire-mode" class="quiz-step">
       <div class="form-grid">
-        <div class="field">
-          <label>Total Corpus</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="swp-c" value="5000000" min="10000" oninput="sy('swp-c','swp-cr')"></div>
-          <input type="range" id="swp-cr" min="100000" max="50000000" step="10000" value="5000000" oninput="sy('swp-cr','swp-c')">
-        </div>
-        <div class="field">
-          <label>Monthly Withdrawal</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="swp-w" value="30000" min="1000" oninput="sy('swp-w','swp-wr')"></div>
-          <input type="range" id="swp-wr" min="1000" max="500000" step="1000" value="30000" oninput="sy('swp-wr','swp-w')">
-        </div>
-        <div class="field">
-          <label>Expected Return (p.a.)</label>
-          <div class="input-wrap"><input type="number" id="swp-r" value="8" min="1" max="30" step="0.1" oninput="sy('swp-r','swp-rr')"><span class="sfx">%</span></div>
-          <input type="range" id="swp-rr" min="1" max="20" step="0.1" value="8" oninput="sy('swp-rr','swp-r')">
-        </div>
+        <div class="field"><label>Current Age</label><div class="input-wrap"><input type="number" id="ret-age" value="30" min="18" max="59" oninput="sy('ret-age','ret-age-r')"><span class="sfx">Yrs</span></div><input type="range" id="ret-age-r" min="18" max="59" step="1" value="30" oninput="sy('ret-age-r','ret-age')"></div>
+        <div class="field"><label>Retirement Age</label><div class="input-wrap"><input type="number" id="ret-rat" value="60" min="40" max="70" oninput="sy('ret-rat','ret-rat-r')"><span class="sfx">Yrs</span></div><input type="range" id="ret-rat-r" min="40" max="70" step="1" value="60" oninput="sy('ret-rat-r','ret-rat')"></div>
+        <div class="field"><label>Target Corpus</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ret-t" value="50000000" min="1000000" oninput="sy('ret-t','ret-tr')"></div><input type="range" id="ret-tr" min="1000000" max="200000000" step="500000" value="50000000" oninput="sy('ret-tr','ret-t')"></div>
+        <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="ret-r" value="12" min="1" max="30" step="0.1" oninput="sy('ret-r','ret-rr')"><span class="sfx">%</span></div><input type="range" id="ret-rr" min="1" max="30" step="0.1" value="12" oninput="sy('ret-rr','ret-r')"></div>
       </div>
+      <label class="infl-row" for="ret-infl"><input type="checkbox" id="ret-infl"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— your corpus target grows with inflation</span></span></label>
+      <button class="btn" onclick="calcRetirement()">Calculate Retirement SIP &rarr;</button>
+      <div class="result-section" id="ret-res">
+        <div class="sep"></div>
+        <div class="goal-highlight"><div class="goal-highlight-label">Monthly SIP Needed for Retirement</div><div class="goal-highlight-val" id="ret-sip">-</div><div class="goal-highlight-sub" id="ret-sip-sub">start today, retire comfortably</div></div>
+        <div class="summary-row">
+          <div class="sum-card"><div class="sum-label">Years to Retire</div><div class="sum-val" id="ret-yrs">-</div><div class="sum-sub">Investment period</div></div>
+          <div class="sum-card"><div class="sum-label">Total Invested</div><div class="sum-val" id="ret-inv">-</div><div class="sum-sub">Your contribution</div></div>
+          <div class="sum-card feat-teal"><div class="sum-label">Retirement Corpus</div><div class="sum-val" id="ret-corpus">-</div><div class="sum-sub" id="ret-corpus-sub">at retirement</div></div>
+        </div>
+        <div class="infl-result" id="ret-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Corpus Target</div><div class="infl-val" id="ret-infl-val">-</div><div class="infl-sub" id="ret-infl-sub">-</div></div>
+        <div class="chart-card"><div class="chart-header"><div class="chart-title">Retirement corpus growth</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#0e7490"></div>Invested</div><div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Corpus</div></div></div><div class="chart-wrap"><canvas id="ret-chart"></canvas><div class="ctt" id="ret-tt"></div></div></div>
+      </div>
+    </div>
+
+    <!-- SWP -->
+    <div id="swp-mode" class="quiz-step">
+      <div class="form-grid">
+        <div class="field"><label>Total Corpus</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="swp-c" value="5000000" min="10000" oninput="sy('swp-c','swp-cr')"></div><input type="range" id="swp-cr" min="100000" max="50000000" step="10000" value="5000000" oninput="sy('swp-cr','swp-c')"></div>
+        <div class="field"><label>Monthly Withdrawal</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="swp-w" value="30000" min="1000" oninput="sy('swp-w','swp-wr')"></div><input type="range" id="swp-wr" min="1000" max="500000" step="1000" value="30000" oninput="sy('swp-wr','swp-w')"></div>
+        <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="swp-r" value="8" min="1" max="30" step="0.1" oninput="sy('swp-r','swp-rr')"><span class="sfx">%</span></div><input type="range" id="swp-rr" min="1" max="20" step="0.1" value="8" oninput="sy('swp-rr','swp-r')"></div>
+      </div>
+      <label class="infl-row" for="swp-infl"><input type="checkbox" id="swp-infl" onchange="onInflChange('swp')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real value of withdrawals</span></span></label>
       <button class="btn" onclick="calcSWP()">Calculate Withdrawals &rarr;</button>
       <div class="result-section" id="swp-res">
         <div class="sep"></div>
         <div class="summary-row">
           <div class="sum-card"><div class="sum-label">Total Withdrawn</div><div class="sum-val" id="swp-tot">-</div><div class="sum-sub">Over full period</div></div>
           <div class="sum-card"><div class="sum-label">Duration</div><div class="sum-val" id="swp-dur">-</div><div class="sum-sub">Until corpus ends</div></div>
-          <div class="sum-card featured"><div class="sum-label">Final Corpus</div><div class="sum-val" id="swp-rem">-</div><div class="sum-sub" id="swp-note">-</div></div>
+          <div class="sum-card feat-teal"><div class="sum-label">Final Corpus</div><div class="sum-val" id="swp-rem">-</div><div class="sum-sub" id="swp-note">-</div></div>
         </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Corpus depletion over time</div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#7B3F00"></div>Remaining</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#D97706"></div>Withdrawn</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="swp-chart"></canvas><div class="ctt" id="swp-tt"></div></div>
-        </div>
+        <div class="infl-result" id="swp-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Withdrawals</div><div class="infl-val" id="swp-infl-val">-</div><div class="infl-sub">Real purchasing power of total withdrawals</div></div>
+        <div class="chart-card"><div class="chart-header"><div class="chart-title">Corpus depletion over time</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#0e7490"></div>Remaining</div><div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>Withdrawn</div></div></div><div class="chart-wrap"><canvas id="swp-chart"></canvas><div class="ctt" id="swp-tt"></div></div></div>
       </div>
     </div>
   </div>
-
-  <!-- IDCW -->
-  <div id="idcw" class="panel">
-    <div class="desc-box">
-      <div class="desc-icon">&#128184;</div>
-      <div>
-        <div class="desc-title">Income Distribution cum Capital Withdrawal (IDCW)</div>
-        <div class="desc-text">Previously known as the "Dividend" option. The fund periodically <strong>distributes a portion of its profits</strong> back to you as income. Unlike SWP, the payout is <strong>not fixed</strong> — it depends on the fund's declared distribution rate and NAV. Suitable for investors wanting occasional passive income while staying invested.</div>
-      </div>
-    </div>
-    <div class="form-card">
-      <div class="form-grid">
-        <div class="field">
-          <label>Investment Amount</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="idcw-a" value="500000" min="10000" oninput="sy('idcw-a','idcw-ar')"></div>
-          <input type="range" id="idcw-ar" min="10000" max="20000000" step="10000" value="500000" oninput="sy('idcw-ar','idcw-a')">
-        </div>
-        <div class="field">
-          <label>Annual IDCW Rate</label>
-          <div class="input-wrap"><input type="number" id="idcw-d" value="8" min="1" max="30" step="0.1" oninput="sy('idcw-d','idcw-dr')"><span class="sfx">%</span></div>
-          <input type="range" id="idcw-dr" min="1" max="30" step="0.1" value="8" oninput="sy('idcw-dr','idcw-d')">
-        </div>
-        <div class="field">
-          <label>Time Horizon</label>
-          <div class="input-wrap"><input type="number" id="idcw-y" value="10" min="1" max="40" oninput="sy('idcw-y','idcw-yr')"><span class="sfx">Yrs</span></div>
-          <input type="range" id="idcw-yr" min="1" max="40" step="1" value="10" oninput="sy('idcw-yr','idcw-y')">
-        </div>
-      </div>
-      <button class="btn" onclick="calcIDCW()">Calculate IDCW &rarr;</button>
-      <div class="result-section" id="idcw-res">
-        <div class="sep"></div>
-        <div class="summary-row">
-          <div class="sum-card"><div class="sum-label">Annual Payout</div><div class="sum-val" id="idcw-ann">-</div><div class="sum-sub">Per year</div></div>
-          <div class="sum-card"><div class="sum-label">Monthly Payout</div><div class="sum-val" id="idcw-mon">-</div><div class="sum-sub">Est. per month</div></div>
-          <div class="sum-card featured"><div class="sum-label">Total IDCW Received</div><div class="sum-val" id="idcw-tot">-</div><div class="sum-sub" id="idcw-note">-</div></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">Cumulative IDCW received over time</div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#6B21A8"></div>IDCW Paid</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#A855F7"></div>Principal</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="idcw-chart"></canvas><div class="ctt" id="idcw-tt"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- NCD + SIP -->
-  <div id="ncd" class="panel">
-    <div class="desc-box">
-      <div class="desc-icon">&#127974;</div>
-      <div>
-        <div class="desc-title">NCD + SIP Strategy</div>
-        <div class="desc-text">Invest a <strong>lumpsum in an NCD (Non-Convertible Debenture)</strong> which pays fixed interest. Instead of spending that interest, you <strong>reinvest it as SIP into a Mutual Fund</strong>. At maturity you get your <strong>NCD principal back</strong> plus a <strong>mutual fund corpus</strong> built from reinvested interest — capital protection with wealth creation.</div>
-      </div>
-    </div>
-    <div class="form-card">
-      <div style="margin-bottom:8px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Interest Reinvestment Frequency</div>
-      <div class="toggle-group">
-        <button class="toggle-btn active" id="ncd-freq-m" onclick="setNCDFreq('monthly')">Monthly Interest &rarr; Monthly SIP</button>
-        <button class="toggle-btn" id="ncd-freq-a" onclick="setNCDFreq('annual')">Annual Interest &rarr; Yearly Lumpsum in MF</button>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label>NCD Investment</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ncd-p" value="500000" min="10000" oninput="sy('ncd-p','ncd-pr')"></div>
-          <input type="range" id="ncd-pr" min="10000" max="20000000" step="10000" value="500000" oninput="sy('ncd-pr','ncd-p')">
-        </div>
-        <div class="field">
-          <label>NCD Interest Rate (p.a.)</label>
-          <div class="input-wrap"><input type="number" id="ncd-ir" value="9" min="1" max="20" step="0.1" oninput="sy('ncd-ir','ncd-irr')"><span class="sfx">%</span></div>
-          <input type="range" id="ncd-irr" min="1" max="20" step="0.1" value="9" oninput="sy('ncd-irr','ncd-ir')">
-        </div>
-        <div class="field">
-          <label>NCD Tenure</label>
-          <div class="input-wrap"><input type="number" id="ncd-y" value="5" min="1" max="30" oninput="sy('ncd-y','ncd-yr')"><span class="sfx">Yrs</span></div>
-          <input type="range" id="ncd-yr" min="1" max="30" step="1" value="5" oninput="sy('ncd-yr','ncd-y')">
-        </div>
-        <div class="field">
-          <label>MF Expected Return (p.a.)</label>
-          <div class="input-wrap"><input type="number" id="ncd-mr" value="12" min="1" max="30" step="0.1" oninput="sy('ncd-mr','ncd-mrr')"><span class="sfx">%</span></div>
-          <input type="range" id="ncd-mrr" min="1" max="30" step="0.1" value="12" oninput="sy('ncd-mrr','ncd-mr')">
-        </div>
-        <div class="field" id="ncd-es-field">
-          <label>Extra Monthly SIP (optional)</label>
-          <div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ncd-es" value="0" min="0" oninput="sy('ncd-es','ncd-esr')"></div>
-          <input type="range" id="ncd-esr" min="0" max="100000" step="500" value="0" oninput="sy('ncd-esr','ncd-es')">
-        </div>
-      </div>
-      <button class="btn" onclick="calcNCD()">Calculate NCD + SIP Returns &rarr;</button>
-      <div class="result-section" id="ncd-res">
-        <div class="sep"></div>
-        <div class="info-strip" id="ncd-strip"></div>
-        <div class="summary-row-4">
-          <div class="sum-card"><div class="sum-label">NCD Principal</div><div class="sum-val" id="ncd-principal">-</div><div class="sum-sub">Returned at maturity</div></div>
-          <div class="sum-card"><div class="sum-label">Total Interest</div><div class="sum-val" id="ncd-int">-</div><div class="sum-sub">From NCD</div></div>
-          <div class="sum-card"><div class="sum-label">MF Corpus Built</div><div class="sum-val" id="ncd-mf">-</div><div class="sum-sub">Reinvested interest</div></div>
-          <div class="sum-card featured"><div class="sum-label">Grand Total</div><div class="sum-val" id="ncd-grand">-</div><div class="sum-sub" id="ncd-grand-sub">NCD + MF combined</div></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header">
-            <div class="chart-title">NCD Principal vs MF Corpus growth</div>
-            <div class="chart-legend">
-              <div class="legend-item"><div class="legend-dot" style="background:#0F4C75"></div>NCD Principal</div>
-              <div class="legend-item"><div class="legend-dot" style="background:#1ABC9C"></div>MF Corpus</div>
-            </div>
-          </div>
-          <div class="chart-wrap"><canvas id="ncd-chart"></canvas><div class="ctt" id="ncd-tt"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <p style="text-align:center;margin-top:44px;font-size:12px;color:var(--muted);font-weight:300;line-height:1.7;">
-    &#9888; Calculations are estimates for illustrative purposes only.<br>
-    Mutual fund investments are subject to market risks, read all scheme-related documents carefully.
-  </p>
-
-  <div class="footer">
-    <div class="footer-name">Prepared by &nbsp; Trivedi Harshil Nileshbhai</div>
-    <div class="footer-details">
-      ARN &mdash; 325735 &nbsp;&bull;&nbsp; AMFI Registered Mutual Fund Distributor<br>
-      &#128231; harshiltrivedi64@gmail.com &nbsp;&bull;&nbsp; &#128222; +91 94082 28744
-    </div>
-    <div class="footer-clock" id="live-clock"></div>
-  </div>
-
 </div>
 
+<!-- ═══ RISK PROFILE ═══ -->
+<div id="risk" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#129504;</div><div><div class="desc-title">Risk Profile Quiz</div><div class="desc-text">Answer <strong>3 simple questions</strong> to discover your investor personality — Conservative, Moderate, or Aggressive. We'll suggest the right <strong>mutual fund categories</strong> with expected return ranges and plain-language explanations.</div></div></div>
+  <div class="form-card">
+    <div class="quiz-progress"><div class="quiz-dot done" id="qdot-0"></div><div class="quiz-dot" id="qdot-1"></div><div class="quiz-dot" id="qdot-2"></div></div>
+    <div class="quiz-step active" id="q-0">
+      <div class="quiz-q">How long can you stay invested without needing the money?</div>
+      <div class="quiz-sub">This helps us understand your investment timeline.</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="selectOpt(0,0,this)">&#128336; Less than 2 years — I may need it soon</button>
+        <button class="quiz-opt" onclick="selectOpt(0,1,this)">&#128197; 2 to 5 years — Medium term</button>
+        <button class="quiz-opt" onclick="selectOpt(0,2,this)">&#127775; More than 5 years — I'm in for the long haul</button>
+      </div>
+      <div class="quiz-nav"><button class="quiz-btn quiz-btn-next" onclick="quizNext(0)">Next &rarr;</button></div>
+    </div>
+    <div class="quiz-step" id="q-1">
+      <div class="quiz-q">Your investment drops 20% in a market crash. What do you do?</div>
+      <div class="quiz-sub">Your reaction to loss reveals your true risk appetite.</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="selectOpt(1,0,this)">&#128680; Sell immediately — I can't handle seeing losses</button>
+        <button class="quiz-opt" onclick="selectOpt(1,1,this)">&#9203; Wait and watch — I'll stay put and hope it recovers</button>
+        <button class="quiz-opt" onclick="selectOpt(1,2,this)">&#128176; Buy more! — Great opportunity at lower prices</button>
+      </div>
+      <div class="quiz-nav"><button class="quiz-btn quiz-btn-back" onclick="quizBack(1)">&#8592; Back</button><button class="quiz-btn quiz-btn-next" onclick="quizNext(1)">Next &rarr;</button></div>
+    </div>
+    <div class="quiz-step" id="q-2">
+      <div class="quiz-q">What is your primary investment goal?</div>
+      <div class="quiz-sub">What matters most to you as an investor?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="selectOpt(2,0,this)">&#128737; Protect my money — safety is everything</button>
+        <button class="quiz-opt" onclick="selectOpt(2,1,this)">&#9878; Steady growth — balanced between safety and returns</button>
+        <button class="quiz-opt" onclick="selectOpt(2,2,this)">&#128640; Maximum growth — I want the highest possible returns</button>
+      </div>
+      <div class="quiz-nav"><button class="quiz-btn quiz-btn-back" onclick="quizBack(2)">&#8592; Back</button><button class="quiz-btn quiz-btn-next" onclick="showRiskResult()">See My Profile &rarr;</button></div>
+    </div>
+    <div class="risk-result" id="risk-result"></div>
+  </div>
+</div>
+
+<!-- ═══ TAX GUIDE ═══ -->
+<div id="tax" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#128196;</div><div><div class="desc-title">Tax Guide for Investors</div><div class="desc-text">Understand <strong>how your investments are taxed</strong>, compare old vs new tax regime, estimate your LTCG tax, calculate ELSS tax savings, and plan your SIP redemption smartly. All in simple language — no jargon.</div></div></div>
+  <div class="form-card">
+    <div class="tax-tabs">
+      <button class="tax-tab active" onclick="switchTax('t-mfguide',this)">&#128218; MF Tax Guide</button>
+      <button class="tax-tab" onclick="switchTax('t-regime',this)">&#9878; Old vs New Regime</button>
+      <button class="tax-tab" onclick="switchTax('t-ltcg',this)">&#128200; LTCG Estimator</button>
+      <button class="tax-tab" onclick="switchTax('t-elss',this)">&#127381; ELSS Tax Saving</button>
+      <button class="tax-tab" onclick="switchTax('t-redemp',this)">&#128260; SIP Redemption Planner</button>
+    </div>
+
+    <!-- MF Tax Guide -->
+    <div id="t-mfguide" class="tax-panel active">
+      <div class="tax-note">&#9432; Mutual fund taxation depends on <strong>type of fund</strong> (Equity or Debt) and <strong>how long you hold</strong> it. Here's everything you need to know in one place.</div>
+      <div class="tax-section-title">Equity Mutual Funds (65%+ in stocks)</div>
+      <table class="tax-table">
+        <tr><th>Holding Period</th><th>Type</th><th>Tax Rate</th><th>Example</th></tr>
+        <tr><td>Less than 1 year</td><td><span class="tax-red">Short Term (STCG)</span></td><td><strong>20%</strong> on gains</td><td>Bought Jan, sold Oct — pay 20% on profit</td></tr>
+        <tr><td>More than 1 year</td><td><span class="tax-green">Long Term (LTCG)</span></td><td><strong>12.5%</strong> on gains above ₹1.25 Lakh</td><td>First ₹1.25L gain is tax-free every year</td></tr>
+      </table>
+      <div class="tax-section-title" style="margin-top:20px;">Debt Mutual Funds (bonds, FDs etc.)</div>
+      <table class="tax-table">
+        <tr><th>Holding Period</th><th>Type</th><th>Tax Rate</th><th>Note</th></tr>
+        <tr><td>Any duration</td><td><span class="tax-red">Always STCG</span></td><td>Added to <strong>your income slab</strong></td><td>If you're in 30% bracket, you pay 30% tax</td></tr>
+      </table>
+      <div class="tax-section-title" style="margin-top:20px;">Hybrid Funds</div>
+      <table class="tax-table">
+        <tr><th>Fund Type</th><th>Equity Allocation</th><th>Taxed As</th></tr>
+        <tr><td>Aggressive Hybrid</td><td>65%+ equity</td><td>Equity fund rules apply</td></tr>
+        <tr><td>Conservative Hybrid</td><td>Less than 65% equity</td><td>Debt fund rules apply</td></tr>
+        <tr><td>Balanced Advantage Fund</td><td>Varies (dynamic)</td><td>Usually Equity fund rules</td></tr>
+      </table>
+      <div class="tax-note" style="margin-top:16px;">&#128161; <strong>Key Tip:</strong> IDCW (Dividend) payouts are added to your income and taxed at your slab rate. Growth option is generally more tax-efficient for long-term investors.</div>
+    </div>
+
+    <!-- Old vs New Regime -->
+    <div id="t-regime" class="tax-panel">
+      <div class="tax-note">&#9432; India offers two tax regimes. You can choose the one that saves you more tax — but you can only switch once per year. Here's a simple comparison to help you decide.</div>
+      <div class="regime-grid">
+        <div class="regime-card old">
+          <div class="regime-card-title">&#128220; Old Tax Regime</div>
+          <div class="regime-card-sub">With deductions and exemptions</div>
+          <div class="regime-point">&#9989; HRA exemption available</div>
+          <div class="regime-point">&#9989; 80C deduction (₹1.5L) — ELSS, PPF, LIC</div>
+          <div class="regime-point">&#9989; 80D medical insurance deduction</div>
+          <div class="regime-point">&#9989; Home loan interest deduction</div>
+          <div class="regime-point">&#9989; Standard deduction ₹50,000</div>
+          <div class="regime-point" style="color:var(--muted);">&#10060; Higher tax slabs</div>
+          <div class="regime-point" style="color:var(--muted);">&#10060; More paperwork and proofs</div>
+          <div class="regime-who">&#127775; Best for: People with home loan, HRA, heavy 80C investments</div>
+        </div>
+        <div class="regime-card new">
+          <div class="regime-card-title">&#9889; New Tax Regime</div>
+          <div class="regime-card-sub">Lower slabs, no deductions</div>
+          <div class="regime-point">&#9989; Lower tax slabs across the board</div>
+          <div class="regime-point">&#9989; Standard deduction ₹75,000</div>
+          <div class="regime-point">&#9989; No documentation needed</div>
+          <div class="regime-point">&#9989; Income up to ₹12L effectively zero tax (with rebate)</div>
+          <div class="regime-point" style="color:var(--muted);">&#10060; No HRA, 80C, 80D benefits</div>
+          <div class="regime-point" style="color:var(--muted);">&#10060; Home loan interest not deductible</div>
+          <div class="regime-who">&#127775; Best for: Salaried with few deductions, income below ₹15L</div>
+        </div>
+      </div>
+      <div class="tax-section-title">New Regime Tax Slabs (FY 2024-25)</div>
+      <table class="tax-table">
+        <tr><th>Income Range</th><th>Tax Rate</th><th>Simple Meaning</th></tr>
+        <tr><td>Up to ₹3 Lakh</td><td><span class="tax-green">0%</span></td><td>No tax at all</td></tr>
+        <tr><td>₹3L – ₹7L</td><td>5%</td><td>₹20,000 max tax in this range</td></tr>
+        <tr><td>₹7L – ₹10L</td><td>10%</td><td>₹30,000 max in this range</td></tr>
+        <tr><td>₹10L – ₹12L</td><td>15%</td><td>₹30,000 max in this range</td></tr>
+        <tr><td>₹12L – ₹15L</td><td>20%</td><td>₹60,000 max in this range</td></tr>
+        <tr><td>Above ₹15L</td><td>30%</td><td>30% on every rupee above ₹15L</td></tr>
+      </table>
+      <div class="tax-note">&#128161; <strong>Remember:</strong> With the new regime, income up to ₹12 Lakh is effectively <strong>zero tax</strong> thanks to Section 87A rebate. Above ₹12L, normal slab rates apply.</div>
+    </div>
+
+    <!-- LTCG Estimator -->
+    <div id="t-ltcg" class="tax-panel">
+      <div class="tax-note">&#9432; <strong>LTCG (Long Term Capital Gains)</strong> applies when you sell equity mutual fund units held for more than 1 year. You get ₹1.25 Lakh exemption per year — only gains above this are taxed at 12.5%.</div>
+      <div class="form-grid">
+        <div class="field"><label>Purchase Value</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ltcg-buy" value="500000" min="1000" oninput="sy('ltcg-buy','ltcg-buy-r')"></div><input type="range" id="ltcg-buy-r" min="1000" max="10000000" step="1000" value="500000" oninput="sy('ltcg-buy-r','ltcg-buy')"></div>
+        <div class="field"><label>Sale Value</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ltcg-sell" value="800000" min="1000" oninput="sy('ltcg-sell','ltcg-sell-r')"></div><input type="range" id="ltcg-sell-r" min="1000" max="20000000" step="1000" value="800000" oninput="sy('ltcg-sell-r','ltcg-sell')"></div>
+        <div class="field"><label>Other LTCG This Year</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ltcg-other" value="0" min="0" oninput="sy('ltcg-other','ltcg-other-r')"></div><input type="range" id="ltcg-other-r" min="0" max="1000000" step="1000" value="0" oninput="sy('ltcg-other-r','ltcg-other')"></div>
+      </div>
+      <button class="btn" onclick="calcLTCG()">Calculate LTCG Tax &rarr;</button>
+      <div class="result-section" id="ltcg-res">
+        <div class="sep"></div>
+        <div class="summary-row-4">
+          <div class="sum-card"><div class="sum-label">Total Gain</div><div class="sum-val" id="ltcg-gain">-</div><div class="sum-sub">Sale minus purchase</div></div>
+          <div class="sum-card"><div class="sum-label">Tax-Free Portion</div><div class="sum-val" id="ltcg-free">-</div><div class="sum-sub">₹1.25L exemption</div></div>
+          <div class="sum-card"><div class="sum-label">Taxable Gain</div><div class="sum-val" id="ltcg-taxable">-</div><div class="sum-sub">Above exemption</div></div>
+          <div class="sum-card feat-amber"><div class="sum-label">LTCG Tax (12.5%)</div><div class="sum-val" id="ltcg-tax">-</div><div class="sum-sub">Amount to pay</div></div>
+        </div>
+        <div class="tax-note" id="ltcg-note"></div>
+      </div>
+    </div>
+
+    <!-- ELSS Tax Saving -->
+    <div id="t-elss" class="tax-panel">
+      <div class="tax-note">&#9432; <strong>ELSS (Equity Linked Savings Scheme)</strong> is the only mutual fund that qualifies for Section 80C tax deduction — up to ₹1.5 Lakh per year. It has a 3-year lock-in and historically delivers good returns.</div>
+      <div class="form-grid">
+        <div class="field"><label>Annual ELSS Investment</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="elss-inv" value="150000" min="500" max="150000" oninput="sy('elss-inv','elss-inv-r')"></div><input type="range" id="elss-inv-r" min="500" max="150000" step="500" value="150000" oninput="sy('elss-inv-r','elss-inv')"></div>
+        <div class="field"><label>Your Tax Slab</label><div class="input-wrap"><input type="number" id="elss-slab" value="30" min="5" max="30" step="5" oninput="sy('elss-slab','elss-slab-r')"><span class="sfx">%</span></div><input type="range" id="elss-slab-r" min="5" max="30" step="5" value="30" oninput="sy('elss-slab-r','elss-slab')"></div>
+        <div class="field"><label>Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="elss-r" value="12" min="1" max="20" step="0.1" oninput="sy('elss-r','elss-rr')"><span class="sfx">%</span></div><input type="range" id="elss-rr" min="1" max="20" step="0.1" value="12" oninput="sy('elss-rr','elss-r')"></div>
+      </div>
+      <button class="btn" onclick="calcELSS()">Calculate ELSS Benefit &rarr;</button>
+      <div class="result-section" id="elss-res">
+        <div class="sep"></div>
+        <div class="summary-row-4">
+          <div class="sum-card"><div class="sum-label">Tax Saved</div><div class="sum-val" id="elss-saved">-</div><div class="sum-sub">Immediate saving</div></div>
+          <div class="sum-card"><div class="sum-label">Effective Cost</div><div class="sum-val" id="elss-cost">-</div><div class="sum-sub">After tax benefit</div></div>
+          <div class="sum-card"><div class="sum-label">3-Year Corpus</div><div class="sum-val" id="elss-corpus">-</div><div class="sum-sub">After lock-in period</div></div>
+          <div class="sum-card feat-amber"><div class="sum-label">Total Benefit</div><div class="sum-val" id="elss-total">-</div><div class="sum-sub">Tax saved + returns</div></div>
+        </div>
+        <div class="tax-note" id="elss-note"></div>
+      </div>
+    </div>
+
+    <!-- SIP Redemption Planner -->
+    <div id="t-redemp" class="tax-panel">
+      <div class="tax-note">&#9432; When you redeem SIP units, <strong>each monthly instalment is treated separately</strong> using FIFO (First In First Out). Units bought 1+ year ago are LTCG (12.5% tax), units bought less than 1 year ago are STCG (20% tax). This planner shows you the tax breakdown.</div>
+      <div class="form-grid">
+        <div class="field"><label>Monthly SIP Amount</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="rp-sip" value="10000" min="100" oninput="sy('rp-sip','rp-sip-r')"></div><input type="range" id="rp-sip-r" min="500" max="200000" step="500" value="10000" oninput="sy('rp-sip-r','rp-sip')"></div>
+        <div class="field"><label>SIP Duration (months invested)</label><div class="input-wrap"><input type="number" id="rp-months" value="24" min="1" max="120" oninput="sy('rp-months','rp-months-r')"><span class="sfx">Mo</span></div><input type="range" id="rp-months-r" min="1" max="120" step="1" value="24" oninput="sy('rp-months-r','rp-months')"></div>
+        <div class="field"><label>Current NAV (now)</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="rp-nav" value="50" min="1" step="0.01" oninput="sy('rp-nav','rp-nav-r')"></div><input type="range" id="rp-nav-r" min="1" max="500" step="1" value="50" oninput="sy('rp-nav-r','rp-nav')"></div>
+        <div class="field"><label>Avg Purchase NAV</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="rp-anav" value="35" min="1" step="0.01" oninput="sy('rp-anav','rp-anav-r')"></div><input type="range" id="rp-anav-r" min="1" max="500" step="1" value="35" oninput="sy('rp-anav-r','rp-anav')"></div>
+      </div>
+      <button class="btn" onclick="calcRedemption()">Analyse Tax on Redemption &rarr;</button>
+      <div class="result-section" id="rp-res">
+        <div class="sep"></div>
+        <div class="summary-row-4">
+          <div class="sum-card"><div class="sum-label">Total Invested</div><div class="sum-val" id="rp-invested">-</div><div class="sum-sub">All SIP instalments</div></div>
+          <div class="sum-card"><div class="sum-label">Current Value</div><div class="sum-val" id="rp-value">-</div><div class="sum-sub">At current NAV</div></div>
+          <div class="sum-card"><div class="sum-label">LTCG Units Value</div><div class="sum-val" id="rp-ltcg-val">-</div><div class="sum-sub">Held 12+ months</div></div>
+          <div class="sum-card"><div class="sum-label">STCG Units Value</div><div class="sum-val" id="rp-stcg-val">-</div><div class="sum-sub">Held less than 12 months</div></div>
+        </div>
+        <div class="summary-row">
+          <div class="sum-card"><div class="sum-label">LTCG Tax</div><div class="sum-val" id="rp-ltcg-tax">-</div><div class="sum-sub">12.5% above ₹1.25L</div></div>
+          <div class="sum-card"><div class="sum-label">STCG Tax</div><div class="sum-val" id="rp-stcg-tax">-</div><div class="sum-sub">20% on STCG gains</div></div>
+          <div class="sum-card feat-amber"><div class="sum-label">Total Tax Estimate</div><div class="sum-val" id="rp-total-tax">-</div><div class="sum-sub">On full redemption</div></div>
+        </div>
+        <div class="tax-note" id="rp-note"></div>
+        <div style="margin-top:16px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Month-by-Month Breakdown</div>
+        <div class="redemp-result-row" id="rp-breakdown"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NCD + SIP ═══ -->
+<div id="ncd" class="panel">
+  <div class="desc-box"><div class="desc-icon">&#127974;</div><div><div class="desc-title">NCD + SIP Strategy</div><div class="desc-text">Invest a <strong>lumpsum in an NCD (Non-Convertible Debenture)</strong> which pays fixed interest. Reinvest that interest as SIP into a Mutual Fund. At maturity get your <strong>NCD principal back</strong> plus a <strong>MF corpus</strong> built from reinvested interest — capital protection with wealth creation.</div></div></div>
+  <div class="form-card">
+    <div style="margin-bottom:8px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Interest Reinvestment Frequency</div>
+    <div class="toggle-group">
+      <button class="toggle-btn active" id="ncd-freq-m" onclick="setNCDFreq('monthly')">Monthly Interest &rarr; Monthly SIP</button>
+      <button class="toggle-btn" id="ncd-freq-a" onclick="setNCDFreq('annual')">Annual Interest &rarr; Yearly Lumpsum in MF</button>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label>NCD Investment</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ncd-p" value="500000" min="10000" oninput="sy('ncd-p','ncd-pr')"></div><input type="range" id="ncd-pr" min="10000" max="20000000" step="10000" value="500000" oninput="sy('ncd-pr','ncd-p')"></div>
+      <div class="field"><label>NCD Interest Rate (p.a.)</label><div class="input-wrap"><input type="number" id="ncd-ir" value="9" min="1" max="20" step="0.1" oninput="sy('ncd-ir','ncd-irr')"><span class="sfx">%</span></div><input type="range" id="ncd-irr" min="1" max="20" step="0.1" value="9" oninput="sy('ncd-irr','ncd-ir')"></div>
+      <div class="field"><label>NCD Tenure</label><div class="input-wrap"><input type="number" id="ncd-y" value="5" min="1" max="30" oninput="sy('ncd-y','ncd-yr')"><span class="sfx">Yrs</span></div><input type="range" id="ncd-yr" min="1" max="30" step="1" value="5" oninput="sy('ncd-yr','ncd-y')"></div>
+      <div class="field"><label>MF Expected Return (p.a.)</label><div class="input-wrap"><input type="number" id="ncd-mr" value="12" min="1" max="30" step="0.1" oninput="sy('ncd-mr','ncd-mrr')"><span class="sfx">%</span></div><input type="range" id="ncd-mrr" min="1" max="30" step="0.1" value="12" oninput="sy('ncd-mrr','ncd-mr')"></div>
+      <div class="field" id="ncd-es-field"><label>Extra Monthly SIP (optional)</label><div class="input-wrap"><span class="pfx">&#8377;</span><input type="number" id="ncd-es" value="0" min="0" oninput="sy('ncd-es','ncd-esr')"></div><input type="range" id="ncd-esr" min="0" max="100000" step="500" value="0" oninput="sy('ncd-esr','ncd-es')"></div>
+    </div>
+    <label class="infl-row" for="ncd-infl"><input type="checkbox" id="ncd-infl" onchange="onInflChange('ncd')"><span class="infl-label">Adjust for 6% Inflation &nbsp;<span>— see real value of grand total</span></span></label>
+    <button class="btn" onclick="calcNCD()">Calculate NCD + SIP Returns &rarr;</button>
+    <div class="result-section" id="ncd-res">
+      <div class="sep"></div>
+      <div class="info-strip" id="ncd-strip"></div>
+      <div class="summary-row-4">
+        <div class="sum-card"><div class="sum-label">NCD Principal</div><div class="sum-val" id="ncd-principal">-</div><div class="sum-sub">Returned at maturity</div></div>
+        <div class="sum-card"><div class="sum-label">Total Interest</div><div class="sum-val" id="ncd-int">-</div><div class="sum-sub">From NCD</div></div>
+        <div class="sum-card"><div class="sum-label">MF Corpus Built</div><div class="sum-val" id="ncd-mf">-</div><div class="sum-sub">Reinvested interest</div></div>
+        <div class="sum-card feat"><div class="sum-label">Grand Total</div><div class="sum-val" id="ncd-grand">-</div><div class="sum-sub" id="ncd-grand-sub">NCD + MF combined</div></div>
+      </div>
+      <div class="infl-result" id="ncd-infl-res"><div class="infl-result-title">&#128293; Inflation-Adjusted Grand Total</div><div class="infl-val" id="ncd-infl-val">-</div><div class="infl-sub">Real purchasing power in today's rupees</div></div>
+      <div class="chart-card"><div class="chart-header"><div class="chart-title">NCD Principal vs MF Corpus growth</div><div class="chart-legend"><div class="legend-item"><div class="legend-dot" style="background:#0F4C75"></div>NCD Principal</div><div class="legend-item"><div class="legend-dot" style="background:#1ABC9C"></div>MF Corpus</div></div></div><div class="chart-wrap"><canvas id="ncd-chart"></canvas><div class="ctt" id="ncd-tt"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TIP BOX -->
+<div class="tip-box">
+  <div class="tip-label">&#128161; Did You Know?</div>
+  <div class="tip-text" id="tip-text"></div>
+  <div class="tip-dots" id="tip-dots"></div>
+</div>
+
+<div class="disclaimer">
+  &#9888; All calculations are estimates for illustrative and educational purposes only. Results are not based on real market performance.<br>
+  Mutual fund investments are subject to market risks. Tax calculations are indicative — consult a tax advisor for your specific situation.<br>
+  Please read all scheme-related documents carefully before investing.
+</div>
+
+<div class="footer">
+  <div class="footer-name">Prepared by &nbsp; Trivedi Harshil Nileshbhai</div>
+  <div class="footer-details">ARN &mdash; 325735 &nbsp;&bull;&nbsp; AMFI Registered Mutual Fund Distributor<br>&#128231; harshiltrivedi64@gmail.com &nbsp;&bull;&nbsp; &#128222; +91 94082 28744</div>
+  <div class="footer-clock" id="live-clock"></div>
+  <div class="footer-copy">&copy; 2026 Trivedi Harshil Nileshbhai. All rights reserved.</div>
+</div>
+</div>
 <script>
-(function() {
+(function(){
+'use strict';
 
-  // ── CLOCK ──
-  function updateClock() {
-    var now = new Date();
-    var mo = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    var da = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-    var ap = h >= 12 ? 'PM' : 'AM';
-    h = h % 12; if (h === 0) h = 12;
-    m = m < 10 ? '0' + m : '' + m;
-    s = s < 10 ? '0' + s : '' + s;
-    var el = document.getElementById('live-clock');
-    if (el) el.textContent = da[now.getDay()] + ', ' + now.getDate() + ' ' + mo[now.getMonth()] + ' ' + now.getFullYear() + '  |  ' + h + ':' + m + ':' + s + ' ' + ap;
+/* ── CLOCK ── */
+function updateClock(){
+  var mo=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var da=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var now=new Date(),h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  var ap=h>=12?'PM':'AM'; h=h%12; if(h===0)h=12;
+  m=m<10?'0'+m:''+m; s=s<10?'0'+s:''+s;
+  var el=document.getElementById('live-clock');
+  if(el)el.textContent=da[now.getDay()]+', '+now.getDate()+' '+mo[now.getMonth()]+' '+now.getFullYear()+'  |  '+h+':'+m+':'+s+' '+ap;
+}
+updateClock(); setInterval(updateClock,1000);
+
+/* ── TIPS ── */
+var tips=[
+  '<strong>The Rule of 72:</strong> Divide 72 by your expected return to know how many years it takes to double your money. At 12% return, your money doubles in just 6 years!',
+  '<strong>Start Early, Win Big:</strong> Investing &#8377;5,000/month from age 25 builds far more than &#8377;10,000/month from age 35 — even though the second person invests twice as much every month.',
+  '<strong>SIP during market falls is a gift:</strong> When markets fall, your SIP buys more units at lower prices. This is Rupee Cost Averaging — volatility automatically works in your favour.',
+  '<strong>Inflation is the silent thief:</strong> At 6% inflation, &#8377;1 Lakh today will only have the purchasing power of &#8377;55,839 after 10 years. Investing helps you stay ahead of inflation.',
+  '<strong>ELSS saves tax + builds wealth:</strong> ELSS gives you &#8377;1.5 Lakh deduction under Section 80C. If you are in the 30% slab, that\'s &#8377;46,800 saved in tax — every single year.',
+  '<strong>Step-Up your SIP every year:</strong> Adding just &#8377;1,000 more to your SIP each year can boost your final corpus by 30-50% over 15 years. Small steps, massive results.',
+  '<strong>LTCG tax-free limit:</strong> Up to &#8377;1.25 Lakh of equity mutual fund gains every year are completely tax-free. Plan your redemptions smartly to stay within this limit.',
+  '<strong>Compounding needs patience:</strong> In a 20-year SIP, nearly 75% of your final corpus is built in the last 7 years. The longer you stay invested, the more powerful compounding becomes.',
+  '<strong>Growth option beats IDCW for wealth:</strong> For long-term investors, the Growth option is more tax-efficient than IDCW (Dividend) because IDCW is taxed at your income slab rate every time it\'s paid.',
+  '<strong>Diversification protects you:</strong> A mix of Large Cap, Mid Cap, and Debt funds balances risk and reward. Don\'t put all your money in one fund or one asset class.'
+];
+var tipIdx=0;
+function renderTips(){
+  var dotsEl=document.getElementById('tip-dots');
+  if(!dotsEl) return;
+  dotsEl.innerHTML='';
+  for(var i=0;i<tips.length;i++){
+    var d=document.createElement('div');
+    d.className='tip-dot'+(i===0?' active':'');
+    d.setAttribute('data-i',''+i);
+    d.style.cursor='pointer';
+    (function(idx){d.onclick=function(){showTip(idx);};})(i);
+    dotsEl.appendChild(d);
   }
-  updateClock();
-  setInterval(updateClock, 1000);
+  showTip(0);
+}
+function showTip(i){
+  tipIdx=i;
+  var el=document.getElementById('tip-text');
+  if(el) el.innerHTML=tips[i];
+  var dots=document.querySelectorAll('.tip-dot');
+  for(var j=0;j<dots.length;j++) dots[j].classList.toggle('active',j===i);
+}
+setInterval(function(){showTip((tipIdx+1)%tips.length);},8000);
+renderTips();
 
-  // ── HELPERS ──
-  var CH = {};
+/* ── HELPERS ── */
+var CH={};
+var lastResults={};
 
-  window.sy = function(a, b) {
-    document.getElementById(b).value = document.getElementById(a).value;
-  };
+window.sy=function(a,b){
+  var ea=document.getElementById(a), eb=document.getElementById(b);
+  if(ea&&eb) eb.value=ea.value;
+};
 
-  function fmt(n) {
-    if (n >= 1e7) return '\u20B9' + (n / 1e7).toFixed(2) + ' Cr';
-    if (n >= 1e5) return '\u20B9' + (n / 1e5).toFixed(2) + ' L';
-    if (n >= 1e3) return '\u20B9' + (n / 1e3).toFixed(1) + 'K';
-    return '\u20B9' + Math.round(n).toLocaleString('en-IN');
+function fmt(n){
+  if(isNaN(n)||n===null) return '-';
+  if(n>=1e7) return '\u20B9'+(n/1e7).toFixed(2)+' Cr';
+  if(n>=1e5) return '\u20B9'+(n/1e5).toFixed(2)+' L';
+  if(n>=1e3) return '\u20B9'+(n/1e3).toFixed(1)+'K';
+  return '\u20B9'+Math.round(n).toLocaleString('en-IN');
+}
+
+function gv(id){ return +document.getElementById(id).value; }
+function sv(id,val){ var el=document.getElementById(id); if(el) el.textContent=val; }
+
+/* ── SWITCH TAB ── */
+window.switchTab=function(name,btn,cls){
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.className='tab';});
+  document.getElementById(name).classList.add('active');
+  btn.classList.add(cls);
+};
+
+/* ── GOAL MODE SWITCH ── */
+window.switchMode=function(mode,btnId){
+  var modes=['goal-mode','retire-mode','swp-mode'];
+  var btnIds=['mode-goal','mode-retire','mode-swp'];
+  modes.forEach(function(m){
+    var el=document.getElementById(m);
+    if(el) el.classList.toggle('active',m===mode);
+  });
+  btnIds.forEach(function(b){
+    var el=document.getElementById(b);
+    if(el) el.classList.toggle('active',b===btnId);
+  });
+};
+
+/* ── TAX TAB SWITCH ── */
+window.switchTax=function(panelId,btn){
+  document.querySelectorAll('.tax-panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tax-tab').forEach(function(t){t.classList.remove('active');});
+  var el=document.getElementById(panelId);
+  if(el) el.classList.add('active');
+  btn.classList.add('active');
+};
+
+/* ── INFLATION ── */
+window.onInflChange=function(tab){
+  var chk=document.getElementById(tab+'-infl');
+  var res=document.getElementById(tab+'-infl-res');
+  if(!chk||!res) return;
+  if(chk.checked){ res.classList.add('show'); applyInfl(tab); }
+  else { res.classList.remove('show'); }
+};
+
+function applyInfl(tab){
+  var data=lastResults[tab];
+  if(!data) return;
+  var adj=data.amount/Math.pow(1.06,data.years);
+  var el=document.getElementById(tab+'-infl-val');
+  if(el) el.textContent=fmt(adj);
+}
+
+function storeAndInfl(tab,amount,years){
+  lastResults[tab]={amount:amount,years:years};
+  var chk=document.getElementById(tab+'-infl');
+  var res=document.getElementById(tab+'-infl-res');
+  if(chk&&chk.checked&&res){
+    res.classList.add('show');
+    applyInfl(tab);
   }
+}
 
-  // ── SWITCH TAB ──
-  window.switchTab = function(name, btn, cls) {
-    var panels = document.querySelectorAll('.panel');
-    for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
-    var tabs = document.querySelectorAll('.tab');
-    for (var i = 0; i < tabs.length; i++) tabs[i].className = 'tab';
-    document.getElementById(name).classList.add('active');
-    btn.classList.add(cls);
-  };
+/* ── CHART ── */
+function destroyChart(id){ if(CH[id]){CH[id].destroy();delete CH[id];} }
 
-  // ── CHART ──
-  function destroyChart(id) {
-    if (CH[id]) { CH[id].destroy(); delete CH[id]; }
-  }
-
-  function buildChart(id, labels, d1, d2, c1, c2, ttId, l1, l2) {
-    destroyChart(id);
-    var canvas = document.getElementById(id);
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var g1 = ctx.createLinearGradient(0, 0, 0, 260);
-    g1.addColorStop(0, c1 + 'ee'); g1.addColorStop(0.45, c1 + '77'); g1.addColorStop(1, c1 + '04');
-    var g2 = ctx.createLinearGradient(0, 0, 0, 260);
-    g2.addColorStop(0, c2 + 'dd'); g2.addColorStop(0.4, c2 + '99'); g2.addColorStop(1, c2 + '04');
-    CH[id] = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: labels,
-        datasets: [
-          { label: l1, data: d1, borderColor: c1, backgroundColor: g1, borderWidth: 2.5, fill: true, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: c1, tension: 0.4 },
-          { label: l2, data: d2, borderColor: c2, backgroundColor: g2, borderWidth: 2.5, fill: true, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: c2, tension: 0.4 }
-        ]
+function buildChart(id,labels,d1,d2,c1,c2,ttId,l1,l2){
+  destroyChart(id);
+  var canvas=document.getElementById(id);
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var g1=ctx.createLinearGradient(0,0,0,240);
+  g1.addColorStop(0,c1+'ee'); g1.addColorStop(0.45,c1+'77'); g1.addColorStop(1,c1+'04');
+  var g2=ctx.createLinearGradient(0,0,0,240);
+  g2.addColorStop(0,c2+'dd'); g2.addColorStop(0.4,c2+'99'); g2.addColorStop(1,c2+'04');
+  CH[id]=new Chart(ctx,{
+    type:'line',
+    data:{labels:labels,datasets:[
+      {label:l1,data:d1,borderColor:c1,backgroundColor:g1,borderWidth:2.5,fill:true,pointRadius:0,pointHoverRadius:5,tension:0.4},
+      {label:l2,data:d2,borderColor:c2,backgroundColor:g2,borderWidth:2.5,fill:true,pointRadius:0,pointHoverRadius:5,tension:0.4}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{display:false},
+        tooltip:{enabled:false,external:function(context){
+          var tt=document.getElementById(ttId);
+          if(!tt) return;
+          var tp=context.tooltip;
+          if(!tp||tp.opacity===0){tt.style.display='none';return;}
+          var html='<div class="ctt-yr">YEAR '+tp.dataPoints[0].label+'</div>';
+          tp.dataPoints.forEach(function(dp,i){
+            var col=i===0?c1:c2;
+            html+='<div class="ctt-row"><span><span class="ctt-dot" style="background:'+col+'"></span>'+dp.dataset.label+'</span><strong>'+fmt(dp.raw)+'</strong></div>';
+          });
+          tt.innerHTML=html; tt.style.display='block';
+          tt.style.left=tp.caretX+'px'; tt.style.top=tp.caretY+'px';
+        }}
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: false,
-            external: function(context) {
-              var tt = document.getElementById(ttId);
-              if (!tt) return;
-              var tp = context.tooltip;
-              if (!tp || tp.opacity === 0) { tt.style.display = 'none'; return; }
-              var yr = tp.dataPoints[0].label;
-              var html = '<div class="ctt-yr">YEAR ' + yr + '</div>';
-              for (var i = 0; i < tp.dataPoints.length; i++) {
-                var dp = tp.dataPoints[i];
-                var col = i === 0 ? c1 : c2;
-                html += '<div class="ctt-row"><span><span class="ctt-dot" style="background:' + col + '"></span>' + dp.dataset.label + '</span><strong>' + fmt(dp.raw) + '</strong></div>';
-              }
-              tt.innerHTML = html;
-              tt.style.display = 'block';
-              tt.style.left = tp.caretX + 'px';
-              tt.style.top = tp.caretY + 'px';
-            }
-          }
-        },
-        scales: {
-          x: { grid: { color: '#f0f0f0', drawBorder: false }, ticks: { font: { family: 'Outfit', size: 11 }, color: '#bbb', callback: function(v, i) { return labels[i] + 'y'; } }, border: { display: false } },
-          y: { grid: { color: '#f0f0f0', drawBorder: false }, ticks: { font: { family: 'Outfit', size: 11 }, color: '#bbb', callback: function(v) { return fmt(v); } }, border: { display: false } }
-        },
-        animation: { duration: 900, easing: 'easeInOutQuart' }
-      }
-    });
+      scales:{
+        x:{grid:{color:'#f0f0f0',drawBorder:false},ticks:{font:{family:'Outfit',size:11},color:'#bbb',callback:function(v,i){return labels[i]+'y';}},border:{display:false}},
+        y:{grid:{color:'#f0f0f0',drawBorder:false},ticks:{font:{family:'Outfit',size:11},color:'#bbb',callback:function(v){return fmt(v);}},border:{display:false}}
+      },
+      animation:{duration:900,easing:'easeInOutQuart'}
+    }
+  });
+}
+
+/* ── SIP ── */
+window.calcSIP=function(){
+  var P=gv('sip-a'),Y=gv('sip-y'),rate=gv('sip-r');
+  if(!P||!Y||!rate) return;
+  var r=rate/100/12,n=Y*12;
+  var mat=P*(((Math.pow(1+r,n)-1)/r)*(1+r));
+  var inv=P*n,gain=mat-inv;
+  sv('sip-inv',fmt(inv)); sv('sip-gain',fmt(gain)); sv('sip-mat',fmt(mat));
+  sv('sip-mul',(mat/inv).toFixed(2)+'x your money');
+  storeAndInfl('sip',mat,Y);
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){var mn=y*12;labels.push(y);d1.push(+(P*mn).toFixed(0));d2.push(+(P*(((Math.pow(1+r,mn)-1)/r)*(1+r))).toFixed(0));}
+  document.getElementById('sip-res').classList.add('show');
+  setTimeout(function(){buildChart('sip-chart',labels,d1,d2,'#2D6A4F','#52B788','sip-tt','Invested','Total Value');},60);
+};
+
+/* ── LUMPSUM ── */
+window.calcLS=function(){
+  var P=gv('ls-a'),Y=gv('ls-y'),rate=gv('ls-r');
+  if(!P||!Y||!rate) return;
+  var mat=P*Math.pow(1+rate/100,Y),gain=mat-P;
+  sv('ls-inv',fmt(P)); sv('ls-gain',fmt(gain)); sv('ls-mat',fmt(mat));
+  sv('ls-mul',(mat/P).toFixed(2)+'x your money');
+  storeAndInfl('ls',mat,Y);
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){labels.push(y);d1.push(P);d2.push(+(P*Math.pow(1+rate/100,y)).toFixed(0));}
+  document.getElementById('ls-res').classList.add('show');
+  setTimeout(function(){buildChart('ls-chart',labels,d1,d2,'#1B4F72','#5DADE2','ls-tt','Invested','Total Value');},60);
+};
+
+/* ── IDCW ── */
+window.calcIDCW=function(){
+  var P=gv('idcw-a'),dRate=gv('idcw-d'),Y=gv('idcw-y');
+  if(!P||!dRate||!Y) return;
+  var annual=P*dRate/100,monthly=annual/12,total=annual*Y;
+  sv('idcw-ann',fmt(annual)); sv('idcw-mon',fmt(monthly)); sv('idcw-tot',fmt(total));
+  sv('idcw-note','Over '+Y+' years');
+  storeAndInfl('idcw',total,Y);
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){labels.push(y);d1.push(+(annual*y).toFixed(0));d2.push(P);}
+  document.getElementById('idcw-res').classList.add('show');
+  setTimeout(function(){buildChart('idcw-chart',labels,d1,d2,'#6B21A8','#A855F7','idcw-tt','IDCW Paid','Principal');},60);
+};
+
+/* ── STEP-UP SIP ── */
+window.calcStepUp=function(){
+  var P=gv('su-a'),stepAmt=gv('su-s'),Y=gv('su-y'),rate=gv('su-r');
+  if(!P||!stepAmt||!Y||!rate) return;
+  var mr=rate/100/12;
+  var corpus=0,totalInv=0,sip=P,flatCorpus=0;
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){
+    for(var m=1;m<=12;m++){corpus=(corpus+sip)*(1+mr);totalInv+=sip;flatCorpus=(flatCorpus+P)*(1+mr);}
+    sip+=stepAmt;
+    labels.push(y); d1.push(+corpus.toFixed(0)); d2.push(+flatCorpus.toFixed(0));
   }
+  var extra=corpus-flatCorpus;
+  sv('su-inv',fmt(totalInv)); sv('su-mat',fmt(corpus));
+  sv('su-mul',(corpus/totalInv).toFixed(2)+'x your money');
+  sv('su-flat',fmt(flatCorpus)); sv('su-extra',fmt(extra));
+  storeAndInfl('stepup',corpus,Y);
+  document.getElementById('su-res').classList.add('show');
+  setTimeout(function(){buildChart('su-chart',labels,d1,d2,'#B45309','#FCD34D','su-tt','Step-Up Corpus','Flat SIP Corpus');},60);
+};
 
-  // ── SIP ──
-  window.calcSIP = function() {
-    var P = +document.getElementById('sip-a').value;
-    var Y = +document.getElementById('sip-y').value;
-    var rate = +document.getElementById('sip-r').value;
-    if (!P || !Y || !rate) return;
-    var r = rate / 100 / 12, n = Y * 12;
-    var mat = P * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
-    var inv = P * n, gain = mat - inv;
-    document.getElementById('sip-inv').textContent = fmt(inv);
-    document.getElementById('sip-gain').textContent = fmt(gain);
-    document.getElementById('sip-mat').textContent = fmt(mat);
-    document.getElementById('sip-mul').textContent = (mat / inv).toFixed(2) + 'x your money';
-    var labels = [], d1 = [], d2 = [];
-    for (var y = 1; y <= Y; y++) {
-      var mn = y * 12;
-      labels.push(y);
-      d1.push(+(P * mn).toFixed(0));
-      d2.push(+(P * (((Math.pow(1 + r, mn) - 1) / r) * (1 + r))).toFixed(0));
-    }
-    document.getElementById('sip-res').classList.add('show');
-    setTimeout(function() { buildChart('sip-chart', labels, d1, d2, '#2D6A4F', '#52B788', 'sip-tt', 'Invested', 'Total Value'); }, 60);
-  };
+/* ── GOAL SIP ── */
+window.calcGoalSIP=function(){
+  var T=gv('gs-t'),Y=gv('gs-y'),rate=gv('gs-r');
+  if(!T||!Y||!rate) return;
+  var useInfl=document.getElementById('gs-infl').checked;
+  var target=useInfl?T*Math.pow(1.06,Y):T;
+  var r=rate/100/12,n=Y*12;
+  var sip=target*r/(((Math.pow(1+r,n)-1))*(1+r));
+  var totalInv=sip*n,gain=target-totalInv;
+  sv('gs-sip',fmt(sip));
+  sv('gs-sip-sub','invest every month for '+Y+' yrs at '+rate+'% p.a.');
+  sv('gs-target',fmt(target));
+  sv('gs-target-sub',useInfl?'Inflation-adjusted target':'Your target amount');
+  sv('gs-invested',fmt(totalInv)); sv('gs-gain',fmt(gain));
+  var inflRes=document.getElementById('gs-infl-res');
+  if(useInfl&&inflRes){
+    inflRes.style.display='block'; inflRes.classList.add('show');
+    sv('gs-infl-val',fmt(target));
+    sv('gs-infl-sub','Your '+fmt(T)+' goal will cost '+fmt(target)+' in '+Y+' years due to 6% inflation');
+  } else if(inflRes){ inflRes.style.display='none'; inflRes.classList.remove('show'); }
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){var mn=y*12;labels.push(y);d1.push(+(sip*mn).toFixed(0));d2.push(+(sip*(((Math.pow(1+r,mn)-1)/r)*(1+r))).toFixed(0));}
+  document.getElementById('gs-res').classList.add('show');
+  setTimeout(function(){buildChart('gs-chart',labels,d1,d2,'#0e7490','#06b6d4','gs-tt','Invested','Corpus');},60);
+};
 
-  // ── LUMPSUM ──
-  window.calcLS = function() {
-    var P = +document.getElementById('ls-a').value;
-    var Y = +document.getElementById('ls-y').value;
-    var rate = +document.getElementById('ls-r').value;
-    if (!P || !Y || !rate) return;
-    var mat = P * Math.pow(1 + rate / 100, Y), gain = mat - P;
-    document.getElementById('ls-inv').textContent = fmt(P);
-    document.getElementById('ls-gain').textContent = fmt(gain);
-    document.getElementById('ls-mat').textContent = fmt(mat);
-    document.getElementById('ls-mul').textContent = (mat / P).toFixed(2) + 'x your money';
-    var labels = [], d1 = [], d2 = [];
-    for (var y = 1; y <= Y; y++) {
-      labels.push(y);
-      d1.push(P);
-      d2.push(+(P * Math.pow(1 + rate / 100, y)).toFixed(0));
-    }
-    document.getElementById('ls-res').classList.add('show');
-    setTimeout(function() { buildChart('ls-chart', labels, d1, d2, '#1B4F72', '#5DADE2', 'ls-tt', 'Invested', 'Total Value'); }, 60);
-  };
+/* ── RETIREMENT ── */
+window.calcRetirement=function(){
+  var age=gv('ret-age'),retAge=gv('ret-rat'),T=gv('ret-t'),rate=gv('ret-r');
+  if(!age||!retAge||!T||!rate||retAge<=age) return;
+  var Y=retAge-age;
+  var useInfl=document.getElementById('ret-infl').checked;
+  var target=useInfl?T*Math.pow(1.06,Y):T;
+  var r=rate/100/12,n=Y*12;
+  var sip=target*r/(((Math.pow(1+r,n)-1))*(1+r));
+  var totalInv=sip*n;
+  sv('ret-sip',fmt(sip));
+  sv('ret-sip-sub','start at age '+age+', invest till '+retAge+' ('+Y+' years)');
+  sv('ret-yrs',Y+' Yrs'); sv('ret-inv',fmt(totalInv));
+  sv('ret-corpus',fmt(target));
+  sv('ret-corpus-sub',useInfl?'Inflation-adjusted corpus':'At retirement');
+  storeAndInfl('ret',target,Y);
+  var inflRes=document.getElementById('ret-infl-res');
+  if(useInfl&&inflRes){
+    inflRes.classList.add('show');
+    sv('ret-infl-val',fmt(target));
+    sv('ret-infl-sub','Your '+fmt(T)+' target becomes '+fmt(target)+' in '+Y+' years due to 6% inflation');
+  } else if(inflRes){ inflRes.classList.remove('show'); }
+  var labels=[],d1=[],d2=[];
+  for(var y=1;y<=Y;y++){var mn=y*12;labels.push(y);d1.push(+(sip*mn).toFixed(0));d2.push(+(sip*(((Math.pow(1+r,mn)-1)/r)*(1+r))).toFixed(0));}
+  document.getElementById('ret-res').classList.add('show');
+  setTimeout(function(){buildChart('ret-chart',labels,d1,d2,'#0e7490','#06b6d4','ret-tt','Invested','Corpus');},60);
+};
 
-  // ── SWP ──
-  window.calcSWP = function() {
-    var corpus = +document.getElementById('swp-c').value;
-    var wdraw = +document.getElementById('swp-w').value;
-    var rate = +document.getElementById('swp-r').value;
-    if (!corpus || !wdraw || !rate) return;
-    var mr = rate / 100 / 12;
-    var bal = corpus, totalW = 0, months = 0;
-    var MAX = 40 * 12, labels = [], d1 = [], d2 = [];
-    while (bal > 0 && months < MAX) {
-      bal = bal * (1 + mr) - wdraw; totalW += wdraw; months++;
-      if (months % 12 === 0) {
-        labels.push(months / 12);
-        d1.push(Math.max(0, +bal.toFixed(0)));
-        d2.push(+totalW.toFixed(0));
-      }
-    }
-    var yrs = Math.floor(months / 12), mos = months % 12;
-    var durStr = months >= MAX ? '40+ Yrs' : (yrs > 0 ? yrs + 'y ' : '') + (mos > 0 ? mos + 'm' : '');
-    document.getElementById('swp-tot').textContent = fmt(totalW);
-    document.getElementById('swp-dur').textContent = durStr;
-    document.getElementById('swp-rem').textContent = months >= MAX ? fmt(Math.max(0, bal)) : '\u20B90';
-    document.getElementById('swp-note').textContent = months >= MAX ? 'Corpus still active' : 'Fully depleted';
-    document.getElementById('swp-res').classList.add('show');
-    setTimeout(function() { buildChart('swp-chart', labels, d1, d2, '#7B3F00', '#D97706', 'swp-tt', 'Remaining', 'Withdrawn'); }, 60);
-  };
+/* ── SWP ── */
+window.calcSWP=function(){
+  var corpus=gv('swp-c'),wdraw=gv('swp-w'),rate=gv('swp-r');
+  if(!corpus||!wdraw||!rate) return;
+  var mr=rate/100/12,bal=corpus,totalW=0,months=0;
+  var MAX=40*12,labels=[],d1=[],d2=[];
+  while(bal>0&&months<MAX){bal=bal*(1+mr)-wdraw;totalW+=wdraw;months++;if(months%12===0){labels.push(months/12);d1.push(Math.max(0,+bal.toFixed(0)));d2.push(+totalW.toFixed(0));}}
+  var yrs=Math.floor(months/12),mos=months%12;
+  var durStr=months>=MAX?'40+ Yrs':(yrs>0?yrs+'y ':'')+(mos>0?mos+'m':'');
+  sv('swp-tot',fmt(totalW)); sv('swp-dur',durStr);
+  sv('swp-rem',months>=MAX?fmt(Math.max(0,bal)):'\u20B90');
+  sv('swp-note',months>=MAX?'Corpus still active':'Fully depleted');
+  storeAndInfl('swp',totalW,yrs);
+  document.getElementById('swp-res').classList.add('show');
+  setTimeout(function(){buildChart('swp-chart',labels,d1,d2,'#0e7490','#06b6d4','swp-tt','Remaining','Withdrawn');},60);
+};
 
-  // ── IDCW ──
-  window.calcIDCW = function() {
-    var P = +document.getElementById('idcw-a').value;
-    var dRate = +document.getElementById('idcw-d').value;
-    var Y = +document.getElementById('idcw-y').value;
-    if (!P || !dRate || !Y) return;
-    var annual = P * dRate / 100, monthly = annual / 12, total = annual * Y;
-    document.getElementById('idcw-ann').textContent = fmt(annual);
-    document.getElementById('idcw-mon').textContent = fmt(monthly);
-    document.getElementById('idcw-tot').textContent = fmt(total);
-    document.getElementById('idcw-note').textContent = 'Over ' + Y + ' years';
-    var labels = [], d1 = [], d2 = [];
-    for (var y = 1; y <= Y; y++) {
-      labels.push(y);
-      d1.push(+(annual * y).toFixed(0));
-      d2.push(P);
-    }
-    document.getElementById('idcw-res').classList.add('show');
-    setTimeout(function() { buildChart('idcw-chart', labels, d1, d2, '#6B21A8', '#A855F7', 'idcw-tt', 'IDCW Paid', 'Principal'); }, 60);
-  };
+/* ── NCD ── */
+var ncdFreq='monthly';
+window.setNCDFreq=function(f){
+  ncdFreq=f;
+  document.getElementById('ncd-freq-m').className='toggle-btn'+(f==='monthly'?' active':'');
+  document.getElementById('ncd-freq-a').className='toggle-btn'+(f==='annual'?' active':'');
+  document.getElementById('ncd-es-field').style.display=f==='monthly'?'':'none';
+};
+window.calcNCD=function(){
+  var P=gv('ncd-p'),ir=gv('ncd-ir'),Y=gv('ncd-y'),mr=gv('ncd-mr'),es=gv('ncd-es')||0;
+  if(!P||!ir||!Y||!mr) return;
+  var labels=[],dP=[],dM=[],mfCorpus=0,totalInt=0;
+  if(ncdFreq==='monthly'){
+    var mInt=(P*ir/100)/12,sip=mInt+es,mRate=mr/100/12;
+    totalInt=mInt*Y*12;
+    for(var y=1;y<=Y;y++){var n=y*12;mfCorpus=sip*(((Math.pow(1+mRate,n)-1)/mRate)*(1+mRate));labels.push(y);dP.push(P);dM.push(+mfCorpus.toFixed(0));}
+    document.getElementById('ncd-strip').innerHTML='<strong>Monthly NCD Interest:</strong> '+fmt(mInt)+'&nbsp;|&nbsp;'+(es>0?'<strong>Extra SIP:</strong> '+fmt(es)+'&nbsp;|&nbsp;':'')+'<strong>Total Monthly SIP into MF:</strong> '+fmt(mInt+es);
+  } else {
+    var aInt=P*ir/100; totalInt=aInt*Y;
+    for(var y=1;y<=Y;y++){mfCorpus=0;for(var i=1;i<=y;i++)mfCorpus+=aInt*Math.pow(1+mr/100,y-i);labels.push(y);dP.push(P);dM.push(+mfCorpus.toFixed(0));}
+    document.getElementById('ncd-strip').innerHTML='<strong>Annual NCD Interest:</strong> '+fmt(P*ir/100)+' reinvested each year as lumpsum';
+  }
+  var grand=P+mfCorpus;
+  sv('ncd-principal',fmt(P)); sv('ncd-int',fmt(totalInt));
+  sv('ncd-mf',fmt(mfCorpus)); sv('ncd-grand',fmt(grand));
+  sv('ncd-grand-sub',(grand/P).toFixed(2)+'x on NCD investment');
+  storeAndInfl('ncd',grand,Y);
+  document.getElementById('ncd-res').classList.add('show');
+  setTimeout(function(){buildChart('ncd-chart',labels,dP,dM,'#0F4C75','#1ABC9C','ncd-tt','NCD Principal','MF Corpus');},60);
+};
 
-  // ── NCD + SIP ──
-  var ncdFreq = 'monthly';
+/* ── RISK QUIZ ── */
+var answers=[null,null,null];
+window.selectOpt=function(q,val,btn){
+  answers[q]=val;
+  var opts=btn.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(function(o){o.classList.remove('selected');});
+  btn.classList.add('selected');
+};
+window.quizNext=function(q){
+  if(answers[q]===null){alert('Please select an option to continue.');return;}
+  document.getElementById('q-'+q).classList.remove('active');
+  var next=q+1;
+  document.getElementById('q-'+next).classList.add('active');
+  for(var i=0;i<=next;i++) document.getElementById('qdot-'+i).classList.add('done');
+};
+window.quizBack=function(q){
+  document.getElementById('q-'+q).classList.remove('active');
+  document.getElementById('q-'+(q-1)).classList.add('active');
+};
+window.showRiskResult=function(){
+  if(answers[2]===null){alert('Please select an option to continue.');return;}
+  var score=answers[0]+answers[1]+answers[2];
+  var profile,label,desc,funds;
+  if(score<=2){
+    profile='conservative'; label='&#128737; Conservative Investor';
+    desc='You prioritize <strong>capital safety over returns</strong>. You prefer instruments where the risk of loss is minimal. Protecting your wealth is a perfectly valid strategy — and there are great fund categories designed exactly for you.';
+    funds=[
+      {name:'Liquid Funds',desc:'Invest in very short-term government and corporate debt. Safe, can be withdrawn anytime. Think of it as a smarter savings account.',ret:'5–7%',risk:'Very Low',horizon:'1 week – 3 months',bar:10,color:'#16a34a'},
+      {name:'Money Market Funds',desc:'Invest in assets maturing up to 1 year. Extremely safe, used for parking idle cash while earning better than FD rates.',ret:'5–6.5%',risk:'Very Low',horizon:'1–6 months',bar:12,color:'#16a34a'},
+      {name:'Short Duration Debt Funds',desc:'Invest in bonds and government securities with 1–3 year maturity. Relatively stable with slightly better returns than liquid funds.',ret:'6–8%',risk:'Low',horizon:'1–3 years',bar:25,color:'#65a30d'},
+      {name:'Conservative Hybrid Funds',desc:'Mostly debt (75–90%) with a small equity portion. Stability of bonds with a touch of equity growth. Best of both for risk-averse investors.',ret:'7–9%',risk:'Low-Medium',horizon:'2–3 years',bar:35,color:'#ca8a04'}
+    ];
+  } else if(score<=4){
+    profile='moderate'; label='&#9878; Moderate Investor';
+    desc='You want <strong>a balance between safety and growth</strong>. You can handle some market ups and downs as long as the long-term direction is positive. Patience is your superpower.';
+    funds=[
+      {name:'Large Cap Funds',desc:'Invest in India\'s top 100 companies — Reliance, TCS, HDFC, Infosys. Stable, established businesses. Less volatile than mid/small cap funds.',ret:'10–12%',risk:'Medium',horizon:'3–5 years',bar:50,color:'#d97706'},
+      {name:'Balanced Advantage Funds',desc:'Dynamically shifts between equity and debt based on market valuations. Automatically reduces equity when markets are expensive. Smart auto-pilot investing.',ret:'9–11%',risk:'Medium',horizon:'3–5 years',bar:45,color:'#d97706'},
+      {name:'Flexi Cap Funds',desc:'Freedom to invest across Large, Mid, and Small Cap. Fund manager picks the best across all market segments. Great for diversified long-term growth.',ret:'11–13%',risk:'Medium-High',horizon:'5+ years',bar:62,color:'#ea580c'},
+      {name:'ELSS – Tax Saving Funds',desc:'Equity funds with 3-year lock-in that give &#8377;1.5 Lakh tax deduction under 80C. Best combination of tax saving and long-term wealth creation.',ret:'11–14%',risk:'Medium-High',horizon:'3–5 years',bar:62,color:'#ea580c'}
+    ];
+  } else {
+    profile='aggressive'; label='&#128640; Aggressive Investor';
+    desc='You are <strong>growth-oriented with high risk tolerance</strong>. You understand markets go up and down but believe in long-term wealth creation. You are willing to stay invested through volatility for potentially higher returns.';
+    funds=[
+      {name:'Mid Cap Funds',desc:'Invest in companies ranked 101–250 by market size — India\'s emerging leaders. Higher growth potential than large caps but more volatile. Rewarding for patient investors.',ret:'12–15%',risk:'High',horizon:'5–7 years',bar:72,color:'#dc2626'},
+      {name:'Small Cap Funds',desc:'Invest in smaller companies with massive growth potential. High risk, high reward. These are tomorrow\'s large caps — requires strong patience and a 7+ year horizon.',ret:'13–18%',risk:'Very High',horizon:'7+ years',bar:88,color:'#be123c'},
+      {name:'Sectoral / Thematic Funds',desc:'Concentrate in one sector — Technology, Healthcare, Infrastructure. Very high return potential when the sector performs, but concentrated risk. Use for tactical allocation.',ret:'10–20%',risk:'Very High',horizon:'5+ years',bar:90,color:'#be123c'},
+      {name:'Mid & Small Cap Blend',desc:'Combination of Mid and Small Cap exposure. Balances growth potential of both segments while diversifying within the high-growth universe.',ret:'12–16%',risk:'High',horizon:'5–7 years',bar:78,color:'#dc2626'}
+    ];
+  }
+  var html='<span class="risk-badge '+profile+'">'+label+'</span>';
+  html+='<div class="risk-title">Your Investor Profile</div>';
+  html+='<div class="risk-desc">'+desc+'</div>';
+  html+='<div style="font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;">Suggested Fund Categories</div>';
+  html+='<div class="fund-grid">';
+  funds.forEach(function(f){
+    html+='<div class="fund-card"><div class="fund-name">'+f.name+'</div><div class="fund-desc">'+f.desc+'</div>';
+    html+='<div class="risk-bar-wrap"><div class="risk-bar-label">Risk Level</div><div class="risk-bar"><div class="risk-bar-fill" style="width:'+f.bar+'%;background:'+f.color+'"></div></div></div>';
+    html+='<div class="fund-meta"><span class="fund-tag tag-return">&#128200; '+f.ret+' p.a.</span><span class="fund-tag tag-horizon">&#128336; '+f.horizon+'</span><span class="fund-tag" style="background:#fee2e2;color:'+f.color+'">&#9888; '+f.risk+'</span></div></div>';
+  });
+  html+='</div>';
+  html+='<div class="risk-disclaimer">&#9432; Return ranges are historical and indicative only — not guaranteed. Actual returns depend on market conditions and investment period. Speak to your AMFI-registered distributor for specific fund recommendations suited to your goals.</div>';
+  html+='<button class="quiz-restart" onclick="restartQuiz()">&#8635; Retake Quiz</button>';
+  for(var i=0;i<3;i++) document.getElementById('q-'+i).classList.remove('active');
+  var rr=document.getElementById('risk-result');
+  rr.innerHTML=html; rr.classList.add('show');
+};
+window.restartQuiz=function(){
+  answers=[null,null,null];
+  document.getElementById('risk-result').classList.remove('show');
+  document.getElementById('risk-result').innerHTML='';
+  for(var i=0;i<3;i++){
+    document.getElementById('q-'+i).classList.toggle('active',i===0);
+    document.getElementById('qdot-'+i).classList.toggle('done',i===0);
+    document.getElementById('q-'+i).querySelectorAll('.quiz-opt').forEach(function(o){o.classList.remove('selected');});
+  }
+  answers=[null,null,null];
+};
 
-  window.setNCDFreq = function(f) {
-    ncdFreq = f;
-    document.getElementById('ncd-freq-m').className = 'toggle-btn' + (f === 'monthly' ? ' active' : '');
-    document.getElementById('ncd-freq-a').className = 'toggle-btn' + (f === 'annual' ? ' active' : '');
-    document.getElementById('ncd-es-field').style.display = f === 'monthly' ? '' : 'none';
-  };
+/* ── LTCG ── */
+window.calcLTCG=function(){
+  var buy=gv('ltcg-buy'),sell=gv('ltcg-sell'),other=gv('ltcg-other')||0;
+  if(!buy||!sell) return;
+  var gain=sell-buy;
+  if(gain<0){sv('ltcg-gain',fmt(gain));sv('ltcg-free','-');sv('ltcg-taxable','-');sv('ltcg-tax','\u20B90');document.getElementById('ltcg-note').textContent='No gain — no tax applicable.';document.getElementById('ltcg-res').classList.add('show');return;}
+  var totalGain=gain+other;
+  var exempt=125000;
+  var taxable=Math.max(0,totalGain-exempt);
+  var tax=taxable*0.125;
+  var freePart=Math.min(gain,Math.max(0,exempt-other));
+  sv('ltcg-gain',fmt(gain)); sv('ltcg-free',fmt(freePart));
+  sv('ltcg-taxable',fmt(taxable)); sv('ltcg-tax',fmt(tax));
+  var noteEl=document.getElementById('ltcg-note');
+  if(tax===0){noteEl.innerHTML='&#129395; <strong>No LTCG tax payable!</strong> Your total gains this year are within the &#8377;1.25 Lakh exemption limit.';}
+  else{noteEl.innerHTML='&#128196; LTCG Tax = <strong>'+fmt(tax)+'</strong> (12.5% on &#8377;'+fmt(taxable)+' taxable gain). &#128161; Tip: If you haven\'t used the full &#8377;1.25L exemption yet, consider booking partial profits before year-end and reinvesting — this resets your cost basis tax-free.';}
+  document.getElementById('ltcg-res').classList.add('show');
+};
 
-  window.calcNCD = function() {
-    var P = +document.getElementById('ncd-p').value;
-    var ir = +document.getElementById('ncd-ir').value;
-    var Y = +document.getElementById('ncd-y').value;
-    var mr = +document.getElementById('ncd-mr').value;
-    var es = +document.getElementById('ncd-es').value || 0;
-    if (!P || !ir || !Y || !mr) return;
-    var labels = [], dP = [], dM = [];
-    var mfCorpus = 0, totalInt = 0;
-    if (ncdFreq === 'monthly') {
-      var mInt = (P * ir / 100) / 12, sip = mInt + es, mRate = mr / 100 / 12;
-      totalInt = mInt * Y * 12;
-      for (var y = 1; y <= Y; y++) {
-        var n = y * 12;
-        mfCorpus = sip * (((Math.pow(1 + mRate, n) - 1) / mRate) * (1 + mRate));
-        labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
-      }
-      document.getElementById('ncd-strip').innerHTML =
-        '<strong>Monthly NCD Interest:</strong> ' + fmt(mInt) + ' &nbsp;|&nbsp; ' +
-        (es > 0 ? '<strong>Extra SIP:</strong> ' + fmt(es) + ' &nbsp;|&nbsp; ' : '') +
-        '<strong>Total Monthly SIP into MF:</strong> ' + fmt(mInt + es);
-    } else {
-      var aInt = P * ir / 100;
-      totalInt = aInt * Y;
-      for (var y = 1; y <= Y; y++) {
-        mfCorpus = 0;
-        for (var i = 1; i <= y; i++) mfCorpus += aInt * Math.pow(1 + mr / 100, y - i);
-        labels.push(y); dP.push(P); dM.push(+mfCorpus.toFixed(0));
-      }
-      document.getElementById('ncd-strip').innerHTML =
-        '<strong>Annual NCD Interest:</strong> ' + fmt(P * ir / 100) + ' reinvested each year as lumpsum into Mutual Fund';
-    }
-    var grand = P + mfCorpus;
-    document.getElementById('ncd-principal').textContent = fmt(P);
-    document.getElementById('ncd-int').textContent = fmt(totalInt);
-    document.getElementById('ncd-mf').textContent = fmt(mfCorpus);
-    document.getElementById('ncd-grand').textContent = fmt(grand);
-    document.getElementById('ncd-grand-sub').textContent = (grand / P).toFixed(2) + 'x on NCD investment';
-    document.getElementById('ncd-res').classList.add('show');
-    setTimeout(function() { buildChart('ncd-chart', labels, dP, dM, '#0F4C75', '#1ABC9C', 'ncd-tt', 'NCD Principal', 'MF Corpus'); }, 60);
-  };
+/* ── ELSS ── */
+window.calcELSS=function(){
+  var inv=gv('elss-inv'),slab=gv('elss-slab'),rate=gv('elss-r');
+  if(!inv||!slab||!rate) return;
+  var maxDeduction=Math.min(inv,150000);
+  var taxSaved=maxDeduction*slab/100;
+  var effectiveCost=inv-taxSaved;
+  var r=rate/100/12,n=36;
+  var corpus=inv*(((Math.pow(1+r,n)-1)/r)*(1+r));
+  var totalBenefit=taxSaved+(corpus-inv);
+  sv('elss-saved',fmt(taxSaved)); sv('elss-cost',fmt(effectiveCost));
+  sv('elss-corpus',fmt(corpus)); sv('elss-total',fmt(totalBenefit));
+  var noteEl=document.getElementById('elss-note');
+  noteEl.innerHTML='&#127381; You invest <strong>'+fmt(inv)+'</strong>, save <strong>'+fmt(taxSaved)+'</strong> in tax immediately, and your effective cost is only <strong>'+fmt(effectiveCost)+'</strong>. After 3 years at '+rate+'% return your corpus grows to <strong>'+fmt(corpus)+'</strong>. Total benefit = tax saved + returns = <strong>'+fmt(totalBenefit)+'</strong>.';
+  document.getElementById('elss-res').classList.add('show');
+};
 
-})();
+/* ── SIP REDEMPTION PLANNER ── */
+window.calcRedemption=function(){
+  var sipAmt=gv('rp-sip'),months=gv('rp-months'),nav=gv('rp-nav'),avgNav=gv('rp-anav');
+  if(!sipAmt||!months||!nav||!avgNav) return;
+  var today=new Date();
+  var totalInvested=sipAmt*months;
+  var totalUnits=totalInvested/avgNav;
+  var currentValue=totalUnits*nav;
+  var ltcgUnits=0,ltcgCost=0,stcgUnits=0,stcgCost=0;
+  var ltcgValue=0,stcgValue=0;
+  var breakdown=[];
+  for(var m=1;m<=months;m++){
+    var purchaseDate=new Date(today.getFullYear(),today.getMonth()-months+m,1);
+    var diffMs=today-purchaseDate;
+    var diffDays=diffMs/(1000*60*60*24);
+    var units=sipAmt/avgNav;
+    var val=units*nav;
+    var gain=val-sipAmt;
+    var isLTCG=diffDays>=365;
+    if(isLTCG){ltcgUnits+=units;ltcgCost+=sipAmt;ltcgValue+=val;}
+    else{stcgUnits+=units;stcgCost+=sipAmt;stcgValue+=val;}
+    var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    breakdown.push({month:mo[purchaseDate.getMonth()]+' '+purchaseDate.getFullYear(),invested:sipAmt,value:+val.toFixed(0),gain:+gain.toFixed(0),isLTCG:isLTCG});
+  }
+  var ltcgGain=ltcgValue-ltcgCost;
+  var ltcgTaxable=Math.max(0,ltcgGain-125000);
+  var ltcgTax=ltcgTaxable*0.125;
+  var stcgGain=stcgValue-stcgCost;
+  var stcgTax=Math.max(0,stcgGain)*0.20;
+  var totalTax=ltcgTax+stcgTax;
+  sv('rp-invested',fmt(totalInvested)); sv('rp-value',fmt(currentValue));
+  sv('rp-ltcg-val',fmt(ltcgValue)); sv('rp-stcg-val',fmt(stcgValue));
+  sv('rp-ltcg-tax',fmt(ltcgTax)); sv('rp-stcg-tax',fmt(stcgTax));
+  sv('rp-total-tax',fmt(totalTax));
+  var noteEl=document.getElementById('rp-note');
+  noteEl.innerHTML='&#128161; <strong>Smart Tip:</strong> '+(stcgUnits>0?'You have <strong>'+stcgUnits.toFixed(2)+' units</strong> that are STCG (less than 12 months). If you wait for these to complete 1 year, they become LTCG and save you tax. ':'All your units qualify for LTCG — great! ')+(ltcgGain<=125000?'Your LTCG is within the &#8377;1.25L exemption — <strong>zero LTCG tax!</strong>':'Consider splitting redemption across two financial years to use the &#8377;1.25L exemption twice.');
+  var bEl=document.getElementById('rp-breakdown');
+  bEl.innerHTML='';
+  breakdown.slice(-12).forEach(function(b){
+    var row=document.createElement('div');
+    row.className='redemp-unit-row '+(b.isLTCG?'ltcg-row':'stcg-row');
+    row.innerHTML='<div><div class="redemp-unit-label">Month</div><div class="redemp-unit-val">'+b.month+' <span class="redemp-badge '+(b.isLTCG?'badge-ltcg':'badge-stcg')+'">'+(b.isLTCG?'LTCG':'STCG')+'</span></div></div>'+'<div><div class="redemp-unit-label">Invested</div><div class="redemp-unit-val">'+fmt(b.invested)+'</div></div>'+'<div><div class="redemp-unit-label">Current Value</div><div class="redemp-unit-val">'+fmt(b.value)+'</div></div>'+'<div><div class="redemp-unit-label">Gain</div><div class="redemp-unit-val" style="color:'+(b.gain>=0?'#16a34a':'#dc2626')+'">'+fmt(b.gain)+'</div></div>';
+    bEl.appendChild(row);
+  });
+  document.getElementById('rp-res').classList.add('show');
+};
+
+}());
 </script>
 </body>
 </html>
