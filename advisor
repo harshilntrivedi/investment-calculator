@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisor Portal — Trivedi Harshil Nileshbhai</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#111;--ink2:#333;--muted:#888;--border:#e8e8e8;
+  --bg:#f7f5f2;--white:#fff;--teal:#0e7490;--amber:#92400e;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-height:100vh;}
+
+/* ── LOGIN ── */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--white);border:1px solid var(--border);border-radius:24px;padding:52px 44px;width:100%;max-width:420px;text-align:center;box-shadow:0 4px 40px rgba(0,0,0,0.06);}
+.login-icon{font-size:44px;margin-bottom:18px;}
+.login-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;margin-bottom:6px;letter-spacing:-0.5px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:36px;font-weight:300;line-height:1.6;}
+.login-input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:15px 18px;font-family:'Outfit',sans-serif;font-size:18px;font-weight:500;color:var(--ink);outline:none;text-align:center;letter-spacing:6px;margin-bottom:14px;transition:border-color 0.2s;}
+.login-input:focus{border-color:var(--teal);background:#fff;}
+.login-btn{width:100%;padding:14px;background:var(--ink);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity 0.2s;}
+.login-btn:hover{opacity:0.82;}
+.login-err{font-size:13px;color:#dc2626;margin-top:12px;display:none;}
+.login-hint{font-size:11px;color:var(--muted);margin-top:14px;font-weight:300;}
+
+/* ── PORTAL ── */
+.portal{display:none;}
+.page{max-width:920px;margin:0 auto;padding:44px 24px 80px;}
+.portal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;flex-wrap:wrap;gap:12px;}
+.portal-title{font-family:'Cormorant Garamond',serif;font-size:clamp(30px,5vw,52px);font-weight:600;line-height:1;letter-spacing:-1px;}
+.portal-title em{font-style:italic;color:var(--muted);}
+.portal-sub{font-size:13px;color:var(--muted);font-weight:300;margin-top:5px;}
+.lock-btn{padding:9px 20px;border:1.5px solid var(--border);border-radius:40px;background:transparent;font-family:'Outfit',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.lock-btn:hover{border-color:var(--ink);color:var(--ink);}
+
+/* ── STEP NAV ── */
+.step-nav{display:flex;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:5px;margin-bottom:32px;gap:4px;overflow-x:auto;}
+.step-nav-btn{flex:1;min-width:90px;padding:10px 8px;border:none;border-radius:11px;background:transparent;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;white-space:nowrap;}
+.step-nav-btn.active{background:var(--ink);color:#fff;}
+.step-nav-btn.done{color:var(--teal);font-weight:600;}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:28px 32px;margin-bottom:22px;}
+@media(max-width:500px){.card{padding:20px 18px;}}
+.card-title{font-size:14px;font-weight:600;margin-bottom:22px;display:flex;align-items:center;gap:8px;}
+.card-title .icon{font-size:20px;}
+
+/* ── FORM ELEMENTS ── */
+.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px;}
+.fg2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:18px;}
+@media(max-width:620px){.fg3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:440px){.fg3,.fg2{grid-template-columns:1fr;}}
+.fld label{display:block;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.fld input,.fld select,.fld textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);outline:none;transition:border-color 0.2s;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--teal);background:#fff;}
+.fld textarea{resize:vertical;min-height:80px;font-size:13px;}
+.fld select{cursor:pointer;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+
+/* ── CHECKBOXES ── */
+.check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px;}
+@media(max-width:500px){.check-grid{grid-template-columns:repeat(2,1fr);}}
+.check-item{display:flex;align-items:center;gap:9px;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.2s;user-select:none;}
+.check-item:hover{border-color:var(--teal);}
+.check-item.on{border-color:var(--teal);background:#ecfeff;}
+.check-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--teal);cursor:pointer;flex-shrink:0;}
+.check-item-lbl{font-size:13px;}
+
+/* ── NUMBER INPUTS ── */
+.num-section{display:none;padding-top:18px;margin-top:18px;border-top:1px solid var(--border);}
+.num-section.show{display:block;animation:fadeUp 0.3s ease both;}
+.num-section-title{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.nr3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:10px;}
+@media(max-width:520px){.nr3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:360px){.nr3{grid-template-columns:1fr;}}
+.nfld label{display:block;font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.ni-wrap{position:relative;}
+.ni-pfx,.ni-sfx{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);pointer-events:none;}
+.ni-pfx{left:11px;}.ni-sfx{right:11px;}
+.ni{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:9px 34px 9px 26px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;color:var(--ink);outline:none;-moz-appearance:textfield;transition:border-color 0.2s;}
+.ni::-webkit-outer-spin-button,.ni::-webkit-inner-spin-button{-webkit-appearance:none;}
+.ni:focus{border-color:var(--teal);background:#fff;}
+
+/* ── BUTTONS ── */
+.btn{width:100%;padding:13px;background:var(--ink);color:#fff;border:none;border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.btn:hover{opacity:0.82;transform:translateY(-1px);}
+.btn-teal{background:var(--teal);color:#fff;border:none;padding:12px 22px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.btn-teal:hover{opacity:0.85;}
+.btn-out{background:transparent;border:1.5px solid var(--border);color:var(--muted);padding:12px 22px;border-radius:12px;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;transition:all 0.2s;}
+.btn-out:hover{border-color:var(--ink);color:var(--ink);}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+
+/* ── STATUS ── */
+.status{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;margin-top:8px;}
+.s-saving{background:#fef9c3;color:#854d0e;}
+.s-saved{background:#dcfce7;color:#166534;}
+.s-err{background:#fee2e2;color:#991b1b;}
+
+/* ── REPORT ── */
+.report-outer{max-width:720px;margin:0 auto;}
+.report-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.report-actions-title{font-size:15px;font-weight:600;}
+.report-actions-sub{font-size:12px;color:var(--muted);font-weight:300;margin-top:2px;}
+.report-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.report-page{background:#fff;border:1px solid var(--border);border-radius:18px;padding:40px 44px;}
+@media(max-width:520px){.report-page{padding:24px 20px;}}
+
+.rh{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:20px;margin-bottom:24px;border-bottom:2px solid var(--ink);flex-wrap:wrap;gap:12px;}
+.rh-firm{font-size:15px;font-weight:600;}
+.rh-firm-sub{font-size:11px;color:var(--muted);line-height:1.9;margin-top:3px;font-weight:300;}
+.rh-date{text-align:right;font-size:12px;color:var(--muted);font-weight:300;}
+
+.rt{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;letter-spacing:-0.5px;margin-bottom:3px;}
+.rt-sub{font-size:13px;color:var(--muted);font-weight:300;margin-bottom:24px;}
+
+.rs{margin-bottom:22px;}
+.rs-title{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:14px;}
+.rg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+@media(max-width:460px){.rg{grid-template-columns:1fr;}}
+.rg4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+@media(max-width:560px){.rg4{grid-template-columns:repeat(2,1fr);}}
+.ri{background:var(--bg);border-radius:10px;padding:12px 14px;}
+.ri.dark{background:var(--ink);}
+.ri.teal{background:var(--teal);}
+.ri-lbl{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.ri.dark .ri-lbl,.ri.teal .ri-lbl{color:rgba(255,255,255,0.45);}
+.ri-val{font-family:'Outfit',sans-serif;font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-0.3px;}
+.ri.dark .ri-val,.ri.teal .ri-val{color:#fff;}
+
+.fund-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg);border-radius:10px;margin-bottom:8px;font-size:13px;}
+.fund-row-name{font-weight:500;}
+.fund-row-ret{font-size:11px;color:var(--muted);}
+
+.r-disclaimer{font-size:11px;color:var(--muted);line-height:1.8;padding:14px 16px;background:var(--bg);border-radius:10px;margin-top:20px;}
+.r-footer{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+
+/* ── PAST CLIENTS ── */
+.sheet-link{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--teal);color:#fff;border-radius:12px;text-decoration:none;font-size:14px;font-weight:500;margin-bottom:18px;transition:opacity 0.2s;}
+.sheet-link:hover{opacity:0.85;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+@media print{.report-actions,.step-nav,.portal-header,.lock-btn{display:none!important;}.report-page{border:none!important;padding:20px!important;}}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">&#128274;</div>
+    <div class="login-title">Advisor Portal</div>
+    <div class="login-sub">
+      Trivedi Harshil Nileshbhai &nbsp;&bull;&nbsp; ARN 325735<br>
+      AMFI Registered Mutual Fund Distributor
+    </div>
+    <input type="password" class="login-input" id="pwd-input"
+      placeholder="&#9679;&#9679;&#9679;"
+      onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Enter Portal &rarr;</button>
+    <div class="login-err" id="login-err">&#10060; Incorrect password. Try again.</div>
+    <div class="login-hint">Hint: 3 letters, you know them &#128521;</div>
+  </div>
+</div>
+
+<!-- ═══ PORTAL ═══ -->
+<div class="portal" id="portal">
+<div class="page">
+
+  <div class="portal-header">
+    <div>
+      <div class="portal-title">Advisor <em>Portal</em></div>
+      <div class="portal-sub">Generate client investment reports &amp; save records automatically</div>
+    </div>
+    <button class="lock-btn" onclick="doLogout()">&#128274; Lock Portal</button>
+  </div>
+
+  <!-- STEP NAV -->
+  <div class="step-nav" id="step-nav">
+    <button class="step-nav-btn active" id="snb-1" onclick="goStep(1)">1&#46; Client Details</button>
+    <button class="step-nav-btn" id="snb-2" onclick="goStep(2)">2&#46; Select Sections</button>
+    <button class="step-nav-btn" id="snb-3" onclick="goStep(3)">3&#46; Enter Numbers</button>
+    <button class="step-nav-btn" id="snb-4" onclick="goStep(4)">4&#46; View Report</button>
+    <button class="step-nav-btn" id="snb-5" onclick="goStep(5)">5&#46; Past Clients</button>
+  </div>
+
+  <!-- ═══ STEP 1: CLIENT DETAILS ═══ -->
+  <div id="step-1">
+    <div class="card">
+      <div class="card-title"><span class="icon">&#128100;</span> Client Information</div>
+      <div class="fg3">
+        <div class="fld"><label>Full Name *</label><input type="text" id="c-name" placeholder="e.g. Rahul Sharma"></div>
+        <div class="fld"><label>Age *</label><input type="number" id="c-age" placeholder="32" min="18" max="80"></div>
+        <div class="fld"><label>Profession</label><input type="text" id="c-prof" placeholder="e.g. Engineer"></div>
+        <div class="fld"><label>Mobile Number</label><input type="tel" id="c-mob" placeholder="+91 98765 43210"></div>
+        <div class="fld"><label>Email Address</label><input type="email" id="c-email" placeholder="email@example.com"></div>
+        <div class="fld">
+          <label>Risk Profile</label>
+          <select id="c-risk">
+            <option value="">— Select —</option>
+            <option value="Conservative">&#128737; Conservative</option>
+            <option value="Moderate">&#9878; Moderate</option>
+            <option value="Aggressive">&#128640; Aggressive</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Primary Goal</label>
+          <select id="c-goal">
+            <option value="">— Select —</option>
+            <option value="Retirement Planning">&#127958; Retirement Planning</option>
+            <option value="Child Education">&#127979; Child Education</option>
+            <option value="Home Purchase">&#127968; Home Purchase</option>
+            <option value="Wealth Creation">&#128176; Wealth Creation</option>
+            <option value="Tax Saving">&#127381; Tax Saving</option>
+            <option value="Emergency Fund">&#128737; Emergency Fund</option>
+            <option value="Other">&#127919; Other</option>
+          </select>
+        </div>
+        <div class="fld"><label>Goal Amount (&#8377;)</label><input type="number" id="c-goal-amt" placeholder="10000000"></div>
+        <div class="fld"><label>Time Horizon (Years)</label><input type="number" id="c-horizon" placeholder="15" min="1" max="40"></div>
+      </div>
+      <div class="fld" style="margin-bottom:22px;">
+        <label>Advisor Notes</label>
+        <textarea id="c-notes" placeholder="Existing investments, special considerations, family situation, any other relevant details..."></textarea>
+      </div>
+      <button class="btn" onclick="goStep(2)">Next: Select Report Sections &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 2: SELECT SECTIONS ═══ -->
+  <div id="step-2" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span class="icon">&#9989;</span> Select What to Include in the Report</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:300;">Tick the sections you want. Only selected sections will appear in the client report.</p>
+      <div class="check-grid">
+        <label class="check-item" id="ci-sip" onclick="toggleSection('sip')">
+          <input type="checkbox" id="cb-sip"><span class="check-item-lbl">&#128200; SIP Calculator</span>
+        </label>
+        <label class="check-item" id="ci-ls" onclick="toggleSection('ls')">
+          <input type="checkbox" id="cb-ls"><span class="check-item-lbl">&#128176; Lumpsum</span>
+        </label>
+        <label class="check-item" id="ci-su" onclick="toggleSection('su')">
+          <input type="checkbox" id="cb-su"><span class="check-item-lbl">&#128293; Step-Up SIP</span>
+        </label>
+        <label class="check-item" id="ci-goal" onclick="toggleSection('goal')">
+          <input type="checkbox" id="cb-goal"><span class="check-item-lbl">&#127919; Goal Planner</span>
+        </label>
+        <label class="check-item" id="ci-retire" onclick="toggleSection('retire')">
+          <input type="checkbox" id="cb-retire"><span class="check-item-lbl">&#127958; Retirement Plan</span>
+        </label>
+        <label class="check-item" id="ci-swp" onclick="toggleSection('swp')">
+          <input type="checkbox" id="cb-swp"><span class="check-item-lbl">&#128260; SWP Plan</span>
+        </label>
+        <label class="check-item" id="ci-elss" onclick="toggleSection('elss')">
+          <input type="checkbox" id="cb-elss"><span class="check-item-lbl">&#127381; ELSS Tax Saving</span>
+        </label>
+        <label class="check-item" id="ci-funds" onclick="toggleSection('funds')">
+          <input type="checkbox" id="cb-funds"><span class="check-item-lbl">&#128218; Fund Categories</span>
+        </label>
+        <label class="check-item" id="ci-tax" onclick="toggleSection('tax')">
+          <input type="checkbox" id="cb-tax"><span class="check-item-lbl">&#128196; Tax Summary</span>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button class="btn-out" onclick="goStep(1)">&#8592; Back</button>
+        <button class="btn" onclick="goStep(3)" style="flex:2;">Next: Enter Numbers &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3: ENTER NUMBERS ═══ -->
+  <div id="step-3" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span class="icon">&#128290;</span> Enter Numbers for Selected Sections</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:300;">Only your selected sections are shown below.</p>
+
+      <!-- SIP -->
+      <div class="num-section" id="ns-sip">
+        <div class="num-section-title">&#128200; SIP Calculator</div>
+        <div class="nr3">
+          <div class="nfld"><label>Monthly SIP (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-sip-a" value="10000"></div></div>
+          <div class="nfld"><label>Time (Years)</label><input type="number" class="ni" id="n-sip-y" value="15"></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-sip-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- Lumpsum -->
+      <div class="num-section" id="ns-ls">
+        <div class="num-section-title">&#128176; Lumpsum Investment</div>
+        <div class="nr3">
+          <div class="nfld"><label>Amount (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-ls-a" value="100000"></div></div>
+          <div class="nfld"><label>Time (Years)</label><input type="number" class="ni" id="n-ls-y" value="10"></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-ls-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- Step-Up SIP -->
+      <div class="num-section" id="ns-su">
+        <div class="num-section-title">&#128293; Step-Up SIP</div>
+        <div class="nr3">
+          <div class="nfld"><label>Starting SIP (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-su-a" value="10000"></div></div>
+          <div class="nfld"><label>Annual Increase (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-su-s" value="1000"></div></div>
+          <div class="nfld"><label>Time (Years)</label><input type="number" class="ni" id="n-su-y" value="15"></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-su-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- Goal Planner -->
+      <div class="num-section" id="ns-goal">
+        <div class="num-section-title">&#127919; Goal Planner</div>
+        <div class="nr3">
+          <div class="nfld"><label>Target Amount (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-gs-t" value="10000000"></div></div>
+          <div class="nfld"><label>Time (Years)</label><input type="number" class="ni" id="n-gs-y" value="10"></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-gs-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- Retirement -->
+      <div class="num-section" id="ns-retire">
+        <div class="num-section-title">&#127958; Retirement Planner</div>
+        <div class="nr3">
+          <div class="nfld"><label>Current Age</label><input type="number" class="ni" id="n-ret-age" value="30"></div>
+          <div class="nfld"><label>Retirement Age</label><input type="number" class="ni" id="n-ret-rat" value="60"></div>
+          <div class="nfld"><label>Target Corpus (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-ret-t" value="50000000"></div></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-ret-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- SWP -->
+      <div class="num-section" id="ns-swp">
+        <div class="num-section-title">&#128260; SWP Plan</div>
+        <div class="nr3">
+          <div class="nfld"><label>Corpus (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-swp-c" value="5000000"></div></div>
+          <div class="nfld"><label>Monthly Withdrawal (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-swp-w" value="30000"></div></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-swp-r" value="8" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- ELSS -->
+      <div class="num-section" id="ns-elss">
+        <div class="num-section-title">&#127381; ELSS Tax Saving</div>
+        <div class="nr3">
+          <div class="nfld"><label>Annual Investment (&#8377;)</label><div class="ni-wrap"><span class="ni-pfx">&#8377;</span><input type="number" class="ni" id="n-elss-i" value="150000"></div></div>
+          <div class="nfld"><label>Tax Slab (%)</label><input type="number" class="ni" id="n-elss-s" value="30"></div>
+          <div class="nfld"><label>Return % (p.a.)</label><input type="number" class="ni" id="n-elss-r" value="12" step="0.1"></div>
+        </div>
+      </div>
+
+      <!-- Fund Categories — auto from risk profile -->
+      <div class="num-section" id="ns-funds">
+        <div class="num-section-title">&#128218; Fund Categories</div>
+        <p style="font-size:13px;color:var(--muted);font-weight:300;">Fund categories are automatically selected based on the client's risk profile set in Step 1. No input needed here.</p>
+      </div>
+
+      <!-- Tax Summary — no input -->
+      <div class="num-section" id="ns-tax">
+        <div class="num-section-title">&#128196; Tax Summary</div>
+        <p style="font-size:13px;color:var(--muted);font-weight:300;">A key tax rules summary for mutual funds will be added to the report automatically.</p>
+      </div>
+
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn-out" onclick="goStep(2)">&#8592; Back</button>
+        <button class="btn" onclick="buildReport()" style="flex:2;">Generate Report &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 4: REPORT ═══ -->
+  <div id="step-4" style="display:none;">
+    <div class="report-outer">
+      <div class="report-actions">
+        <div>
+          <div class="report-actions-title">&#9989; Report Ready</div>
+          <div id="save-status"></div>
+        </div>
+        <div class="report-btns">
+          <button class="btn-out" onclick="goStep(3)">&#9998; Edit</button>
+          <button class="btn-teal" onclick="printReport()">&#11015; Download PDF</button>
+          <button class="btn-out" onclick="startFresh()">&#43; New Client</button>
+        </div>
+      </div>
+
+      <!-- REPORT PAGE -->
+      <div class="report-page" id="report-page">
+
+        <!-- Header -->
+        <div class="rh">
+          <div>
+            <div class="rh-firm">Trivedi Harshil Nileshbhai</div>
+            <div class="rh-firm-sub">
+              ARN &mdash; 325735 &nbsp;&bull;&nbsp; AMFI Registered Mutual Fund Distributor<br>
+              &#128231; harshiltrivedi64@gmail.com &nbsp;&bull;&nbsp; &#128222; +91 94082 28744
+            </div>
+          </div>
+          <div class="rh-date" id="rep-date">-</div>
+        </div>
+
+        <div class="rt">Investment Report</div>
+        <div class="rt-sub" id="rep-subtitle">Personalised financial plan</div>
+
+        <!-- Client Info -->
+        <div class="rs">
+          <div class="rs-title">Client Information</div>
+          <div class="rg" id="rep-client"></div>
+        </div>
+
+        <!-- Dynamic Sections -->
+        <div id="rep-body"></div>
+
+        <!-- Disclaimer -->
+        <div class="r-disclaimer">
+          &#9888; <strong>Disclaimer:</strong> This report is for illustrative and educational purposes only. All figures are estimates based on assumed rates of return and are not guaranteed. Mutual fund investments are subject to market risks. Past performance is not indicative of future results. Fund category suggestions are indicative only — not specific fund recommendations. Please read all scheme-related documents carefully before investing. Consult your AMFI registered distributor before making any investment decisions.
+        </div>
+
+        <div class="r-footer">
+          <span>Prepared by Trivedi Harshil Nileshbhai &bull; ARN 325735</span>
+          <span>&copy; 2026 All rights reserved</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 5: PAST CLIENTS ═══ -->
+  <div id="step-5" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span class="icon">&#128203;</span> Past Client Records</div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:20px;font-weight:300;line-height:1.7;">
+        Every report you generate is automatically saved to your Google Sheet with full client details — name, age, profession, mobile, email, risk profile, goal, investment amounts and date.
+      </p>
+      <a class="sheet-link" href="https://docs.google.com/spreadsheets/d/17EOMYp9aW3Z-okV3sTXJ7aA2x8lBYwq3Kr7Q06cL8MQ/edit" target="_blank">
+        &#128196; Open Client Records in Google Sheet &rarr;
+      </a>
+      <p style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.7;margin-top:10px;">
+        &#128161; Tip: In Google Sheets you can filter by date, sort by name, or search any client in seconds.
+      </p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+(function () {
+'use strict';
+
+var SHEET = 'https://script.google.com/macros/s/AKfycbwyU2xu6aejZV2wgzN25vUpOoiFtQ0qXP4iELXuOxc6YU5r5miQhys26yIB25QH8bL7/exec';
+var sel = {};
+
+/* ══ PASSWORD ══
+   Accept any case combination of H, N, T in any order
+   e.g. hnt HNT Hnt hNT HnT — all valid */
+window.doLogin = function () {
+  var raw = document.getElementById('pwd-input').value;
+  var clean = raw.toLowerCase().replace(/\s/g, '');
+  var sorted = clean.split('').sort().join('');
+  if (sorted === 'hnt') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+    document.getElementById('login-err').style.display = 'none';
+    document.getElementById('pwd-input').value = '';
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+};
+
+window.doLogout = function () {
+  document.getElementById('portal').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pwd-input').value = '';
+};
+
+/* ══ STEPS ══ */
+function goStep(n) {
+  for (var i = 1; i <= 5; i++) {
+    var panel = document.getElementById('step-' + i);
+    var btn = document.getElementById('snb-' + i);
+    if (panel) panel.style.display = (i === n) ? 'block' : 'none';
+    if (btn) {
+      btn.classList.remove('active', 'done');
+      if (i === n) btn.classList.add('active');
+      else if (i < n) btn.classList.add('done');
+    }
+  }
+  if (n === 3) refreshNumSections();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+window.goStep = goStep;
+
+/* ══ SECTION TOGGLES ══ */
+window.toggleSection = function (key) {
+  sel[key] = !sel[key];
+  var ci = document.getElementById('ci-' + key);
+  var cb = document.getElementById('cb-' + key);
+  if (ci) ci.classList.toggle('on', !!sel[key]);
+  if (cb) cb.checked = !!sel[key];
+};
+
+function refreshNumSections () {
+  var keys = ['sip','ls','su','goal','retire','swp','elss','funds','tax'];
+  keys.forEach(function (k) {
+    var el = document.getElementById('ns-' + k);
+    if (el) el.classList.toggle('show', !!sel[k]);
+  });
+}
+
+/* ══ HELPERS ══ */
+function gv(id) { var e = document.getElementById(id); return e ? +e.value : 0; }
+function gs(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; }
+
+function fmt(n) {
+  if (!n || isNaN(n)) return '—';
+  if (n >= 1e7) return '\u20B9' + (n / 1e7).toFixed(2) + ' Cr';
+  if (n >= 1e5) return '\u20B9' + (n / 1e5).toFixed(2) + ' L';
+  if (n >= 1e3) return '\u20B9' + (n / 1e3).toFixed(1) + 'K';
+  return '\u20B9' + Math.round(n).toLocaleString('en-IN');
+}
+
+function ri(label, value, style) {
+  var cls = 'ri' + (style ? ' ' + style : '');
+  return '<div class="' + cls + '"><div class="ri-lbl">' + label + '</div><div class="ri-val">' + value + '</div></div>';
+}
+
+/* ══ CALCULATIONS ══ */
+function calcSIP(P, Y, rate) {
+  var r = rate / 100 / 12, n = Y * 12;
+  var mat = P * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+  return { inv: P * n, mat: mat, gain: mat - P * n };
+}
+function calcLS(P, Y, rate) {
+  var mat = P * Math.pow(1 + rate / 100, Y);
+  return { inv: P, mat: mat, gain: mat - P };
+}
+function calcSU(P, step, Y, rate) {
+  var mr = rate / 100 / 12, corpus = 0, inv = 0, sip = P;
+  for (var y = 1; y <= Y; y++) {
+    for (var m = 1; m <= 12; m++) { corpus = (corpus + sip) * (1 + mr); inv += sip; }
+    sip += step;
+  }
+  return { inv: inv, mat: corpus, gain: corpus - inv };
+}
+function calcGoal(T, Y, rate) {
+  var r = rate / 100 / 12, n = Y * 12;
+  var sip = T * r / (((Math.pow(1 + r, n) - 1)) * (1 + r));
+  return { sip: sip, inv: sip * n, gain: T - sip * n };
+}
+function calcRet(age, retAge, T, rate) {
+  var Y = retAge - age, r = rate / 100 / 12, n = Y * 12;
+  var sip = T * r / (((Math.pow(1 + r, n) - 1)) * (1 + r));
+  return { sip: sip, years: Y, inv: sip * n };
+}
+function calcSWP(corpus, wdraw, rate) {
+  var mr = rate / 100 / 12, bal = corpus, tot = 0, mo = 0, MAX = 40 * 12;
+  while (bal > 0 && mo < MAX) { bal = bal * (1 + mr) - wdraw; tot += wdraw; mo++; }
+  var y = Math.floor(mo / 12), m = mo % 12;
+  return { tot: tot, dur: (mo >= MAX ? '40+ Yrs' : (y > 0 ? y + 'y ' : '') + (m > 0 ? m + 'm' : '')), rem: Math.max(0, bal) };
+}
+function calcELSS(inv, slab, rate) {
+  var maxD = Math.min(inv, 150000), saved = maxD * slab / 100;
+  var r = rate / 100 / 12, n = 36;
+  var corpus = inv * (((Math.pow(1 + r, n) - 1) / r) * (1 + r));
+  return { saved: saved, cost: inv - saved, corpus: corpus };
+}
+
+function getFunds(risk) {
+  if (risk === 'Conservative') return [
+    { n: 'Liquid Funds', r: '5–7% p.a.' },
+    { n: 'Money Market Funds', r: '5–6.5% p.a.' },
+    { n: 'Short Duration Debt Funds', r: '6–8% p.a.' },
+    { n: 'Conservative Hybrid Funds', r: '7–9% p.a.' }
+  ];
+  if (risk === 'Aggressive') return [
+    { n: 'Mid Cap Funds', r: '12–15% p.a.' },
+    { n: 'Small Cap Funds', r: '13–18% p.a.' },
+    { n: 'Flexi Cap Funds', r: '11–13% p.a.' },
+    { n: 'Sectoral / Thematic Funds', r: '10–20% p.a.' }
+  ];
+  return [
+    { n: 'Large Cap Funds', r: '10–12% p.a.' },
+    { n: 'Balanced Advantage Funds', r: '9–11% p.a.' },
+    { n: 'Flexi Cap Funds', r: '11–13% p.a.' },
+    { n: 'ELSS – Tax Saving Funds', r: '11–14% p.a.' }
+  ];
+}
+
+/* ══ BUILD REPORT ══ */
+window.buildReport = function () {
+  var name = gs('c-name');
+  if (!name) { alert('Please fill in the client name in Step 1.'); goStep(1); return; }
+
+  var now = new Date();
+  var mo = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var dateStr = now.getDate() + ' ' + mo[now.getMonth()] + ' ' + now.getFullYear();
+
+  document.getElementById('rep-date').innerHTML = dateStr + '<br>Investment Report';
+  document.getElementById('rep-subtitle').textContent = 'Personalised financial plan for ' + name;
+
+  /* Client info */
+  var risk = gs('c-risk'), goal = gs('c-goal');
+  var cHTML = '';
+  var cItems = [
+    { l: 'Name', v: name },
+    { l: 'Age', v: gs('c-age') ? gs('c-age') + ' years' : '—' },
+    { l: 'Profession', v: gs('c-prof') || '—' },
+    { l: 'Mobile', v: gs('c-mob') || '—' },
+    { l: 'Risk Profile', v: risk || '—' },
+    { l: 'Primary Goal', v: goal || '—' },
+    { l: 'Goal Amount', v: gs('c-goal-amt') ? fmt(+gs('c-goal-amt')) : '—' },
+    { l: 'Time Horizon', v: gs('c-horizon') ? gs('c-horizon') + ' Years' : '—' }
+  ];
+  cItems.forEach(function (it) { cHTML += ri(it.l, it.v); });
+  document.getElementById('rep-client').innerHTML = cHTML;
+
+  /* Dynamic body */
+  var body = '';
+
+  if (sel['sip']) {
+    var r = calcSIP(gv('n-sip-a'), gv('n-sip-y'), gv('n-sip-r'));
+    body += '<div class="rs"><div class="rs-title">&#128200; SIP Calculator</div><div class="rg4">';
+    body += ri('Monthly SIP', fmt(gv('n-sip-a')));
+    body += ri('Time Horizon', gv('n-sip-y') + ' Years');
+    body += ri('Total Invested', fmt(r.inv));
+    body += ri('Estimated Maturity', fmt(r.mat), 'teal');
+    body += '</div></div>';
+  }
+
+  if (sel['ls']) {
+    var r = calcLS(gv('n-ls-a'), gv('n-ls-y'), gv('n-ls-r'));
+    body += '<div class="rs"><div class="rs-title">&#128176; Lumpsum Investment</div><div class="rg4">';
+    body += ri('Investment Amount', fmt(gv('n-ls-a')));
+    body += ri('Time Horizon', gv('n-ls-y') + ' Years');
+    body += ri('Est. Returns', fmt(r.gain));
+    body += ri('Estimated Maturity', fmt(r.mat), 'teal');
+    body += '</div></div>';
+  }
+
+  if (sel['su']) {
+    var r = calcSU(gv('n-su-a'), gv('n-su-s'), gv('n-su-y'), gv('n-su-r'));
+    body += '<div class="rs"><div class="rs-title">&#128293; Step-Up SIP</div><div class="rg4">';
+    body += ri('Starting SIP', fmt(gv('n-su-a')));
+    body += ri('Annual Increase', fmt(gv('n-su-s')));
+    body += ri('Total Invested', fmt(r.inv));
+    body += ri('Step-Up Corpus', fmt(r.mat), 'teal');
+    body += '</div></div>';
+  }
+
+  if (sel['goal']) {
+    var r = calcGoal(gv('n-gs-t'), gv('n-gs-y'), gv('n-gs-r'));
+    body += '<div class="rs"><div class="rs-title">&#127919; Goal Planner</div><div class="rg4">';
+    body += ri('Target Goal', fmt(gv('n-gs-t')));
+    body += ri('Time Horizon', gv('n-gs-y') + ' Years');
+    body += ri('Required Monthly SIP', fmt(r.sip), 'dark');
+    body += ri('Total to Invest', fmt(r.inv));
+    body += '</div></div>';
+  }
+
+  if (sel['retire']) {
+    var r = calcRet(gv('n-ret-age'), gv('n-ret-rat'), gv('n-ret-t'), gv('n-ret-r'));
+    body += '<div class="rs"><div class="rs-title">&#127958; Retirement Planner</div><div class="rg4">';
+    body += ri('Current Age', gv('n-ret-age') + ' Years');
+    body += ri('Retirement Age', gv('n-ret-rat') + ' Years');
+    body += ri('Monthly SIP Needed', fmt(r.sip), 'dark');
+    body += ri('Target Corpus', fmt(gv('n-ret-t')), 'teal');
+    body += '</div></div>';
+  }
+
+  if (sel['swp']) {
+    var r = calcSWP(gv('n-swp-c'), gv('n-swp-w'), gv('n-swp-r'));
+    body += '<div class="rs"><div class="rs-title">&#128260; SWP Plan</div><div class="rg4">';
+    body += ri('Starting Corpus', fmt(gv('n-swp-c')));
+    body += ri('Monthly Withdrawal', fmt(gv('n-swp-w')));
+    body += ri('Corpus Duration', r.dur);
+    body += ri('Total Withdrawn', fmt(r.tot), 'teal');
+    body += '</div></div>';
+  }
+
+  if (sel['elss']) {
+    var r = calcELSS(gv('n-elss-i'), gv('n-elss-s'), gv('n-elss-r'));
+    body += '<div class="rs"><div class="rs-title">&#127381; ELSS Tax Saving</div><div class="rg4">';
+    body += ri('Annual Investment', fmt(gv('n-elss-i')));
+    body += ri('Tax Saved (80C)', fmt(r.saved), 'teal');
+    body += ri('Effective Cost', fmt(r.cost));
+    body += ri('3-Year Corpus', fmt(r.corpus), 'dark');
+    body += '</div></div>';
+  }
+
+  if (sel['funds'] && risk) {
+    var funds = getFunds(risk);
+    body += '<div class="rs"><div class="rs-title">&#128218; Suggested Fund Categories (' + risk + ' Profile)</div>';
+    funds.forEach(function (f) {
+      body += '<div class="fund-row"><div class="fund-row-name">' + f.n + '</div><div class="fund-row-ret">&#128200; ' + f.r + '</div></div>';
+    });
+    body += '<p style="font-size:11px;color:var(--muted);margin-top:8px;font-weight:300;">&#9432; Category-level suggestions only. Specific fund recommendations should be made after detailed discussion.</p></div>';
+  }
+
+  if (sel['tax']) {
+    body += '<div class="rs"><div class="rs-title">&#128196; Key Tax Rules for Mutual Funds</div>';
+    body += '<div class="fund-row"><div class="fund-row-name">Equity LTCG — held 1+ year</div><div class="fund-row-ret">12.5% on gains above \u20B91.25 Lakh</div></div>';
+    body += '<div class="fund-row"><div class="fund-row-name">Equity STCG — held less than 1 year</div><div class="fund-row-ret">20% on all gains</div></div>';
+    body += '<div class="fund-row"><div class="fund-row-name">Debt Funds — any duration</div><div class="fund-row-ret">Taxed at your income slab rate</div></div>';
+    body += '<div class="fund-row"><div class="fund-row-name">ELSS Lock-in Period</div><div class="fund-row-ret">Minimum 3 years</div></div>';
+    body += '</div>';
+  }
+
+  if (gs('c-notes')) {
+    body += '<div class="rs"><div class="rs-title">&#128203; Advisor Notes</div>';
+    body += '<p style="font-size:13px;color:var(--ink2);line-height:1.75;font-weight:300;">' + gs('c-notes') + '</p></div>';
+  }
+
+  document.getElementById('rep-body').innerHTML = body;
+
+  goStep(4);
+  saveToSheet(dateStr);
+};
+
+/* ══ SAVE TO GOOGLE SHEET ══ */
+function saveToSheet(dateStr) {
+  var statusEl = document.getElementById('save-status');
+  statusEl.innerHTML = '<span class="status s-saving">&#9203; Saving to Google Sheet...</span>';
+
+  var payload = {
+    date: dateStr,
+    name: gs('c-name'),
+    age: gs('c-age'),
+    profession: gs('c-prof'),
+    mobile: gs('c-mob'),
+    email: gs('c-email'),
+    riskProfile: gs('c-risk'),
+    goal: gs('c-goal'),
+    goalAmount: gs('c-goal-amt'),
+    timeHorizon: gs('c-horizon'),
+    monthlySIP: (gv('n-sip-a') || gv('n-gs-t') || 0).toString(),
+    stepUp: gv('n-su-s').toString(),
+    lumpsum: gv('n-ls-a').toString(),
+    notes: gs('c-notes')
+  };
+
+  fetch(SHEET, { method: 'POST', body: JSON.stringify(payload) })
+    .then(function (res) { return res.json(); })
+    .then(function (data) {
+      if (data.status === 'success') {
+        statusEl.innerHTML = '<span class="status s-saved">&#9989; Client saved to Google Sheet</span>';
+      } else {
+        statusEl.innerHTML = '<span class="status s-err">&#10060; Sheet save failed — open sheet manually</span>';
+      }
+    })
+    .catch(function () {
+      statusEl.innerHTML = '<span class="status s-err">&#10060; Could not connect to sheet — check internet</span>';
+    });
+}
+
+/* ══ PRINT / PDF ══ */
+window.printReport = function () {
+  window.print();
+};
+
+/* ══ NEW CLIENT ══ */
+window.startFresh = function () {
+  if (!confirm('Start a new report? Current data will be cleared.')) return;
+  var textIds = ['c-name','c-age','c-prof','c-mob','c-email','c-goal-amt','c-horizon','c-notes'];
+  textIds.forEach(function (id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  var selIds = ['c-risk','c-goal'];
+  selIds.forEach(function (id) { var e = document.getElementById(id); if (e) e.value = ''; });
+  sel = {};
+  var keys = ['sip','ls','su','goal','retire','swp','elss','funds','tax'];
+  keys.forEach(function (k) {
+    var ci = document.getElementById('ci-' + k);
+    var cb = document.getElementById('cb-' + k);
+    if (ci) ci.classList.remove('on');
+    if (cb) cb.checked = false;
+  });
+  goStep(1);
+};
+
+}());
+</script>
+</body>
+</html>
