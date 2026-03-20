@@ -390,7 +390,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-h
             <div class="rh-firm">Trivedi Harshil Nileshbhai</div>
             <div class="rh-firm-sub">
               ARN &mdash; 325735 &nbsp;&bull;&nbsp; AMFI Registered Mutual Fund Distributor<br>
-              &#128231; harshiltrivedi64@gmail.com &nbsp;&bull;&nbsp; &#128222; +91 94082 28744
+              &#128231; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ef878e9d9c8786839b9d86998a8b86d9dbaf88828e8683c18c8082">[email&#160;protected]</a> &nbsp;&bull;&nbsp; &#128222; +91 94082 28744
             </div>
           </div>
           <div class="rh-date" id="rep-date">-</div>
@@ -441,7 +441,7 @@ body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;min-h
 </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 (function () {
 'use strict';
 
@@ -738,18 +738,18 @@ function saveToSheet(dateStr) {
     notes: gs('c-notes')
   };
 
-  fetch(SHEET, { method: 'POST', body: JSON.stringify(payload) })
-    .then(function (res) { return res.json(); })
-    .then(function (data) {
-      if (data.status === 'success') {
-        statusEl.innerHTML = '<span class="status s-saved">&#9989; Client saved to Google Sheet</span>';
-      } else {
-        statusEl.innerHTML = '<span class="status s-err">&#10060; Sheet save failed — open sheet manually</span>';
-      }
-    })
-    .catch(function () {
-      statusEl.innerHTML = '<span class="status s-err">&#10060; Could not connect to sheet — check internet</span>';
-    });
+  fetch(SHEET, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(function () {
+    statusEl.innerHTML = '<span class="status s-saved">&#9989; Client saved to Google Sheet</span>';
+  })
+  .catch(function () {
+    statusEl.innerHTML = '<span class="status s-err">&#10060; Could not connect to sheet — check internet</span>';
+  });
 }
 
 /* ══ PRINT / PDF ══ */
@@ -766,16 +766,4 @@ window.startFresh = function () {
   selIds.forEach(function (id) { var e = document.getElementById(id); if (e) e.value = ''; });
   sel = {};
   var keys = ['sip','ls','su','goal','retire','swp','elss','funds','tax'];
-  keys.forEach(function (k) {
-    var ci = document.getElementById('ci-' + k);
-    var cb = document.getElementById('cb-' + k);
-    if (ci) ci.classList.remove('on');
-    if (cb) cb.checked = false;
-  });
-  goStep(1);
-};
-
-}());
-</script>
-</body>
-</html>
+  keys.forEach(fu
